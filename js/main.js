@@ -1,0 +1,289 @@
+(function(){
+"use strict";
+var WA = "919166720321";
+var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ================= DATA ================= */
+var PILLARS = [
+  {id:"build", name:"Build", desc:"Websites, apps and interfaces that are fast, secure and ready to grow."},
+  {id:"grow", name:"Grow", desc:"Marketing, marketplaces and content that bring customers to you."},
+  {id:"automate", name:"Automate", desc:"Systems that handle the repetitive work so your team can focus on selling."},
+  {id:"advise", name:"Advise", desc:"Honest guidance on what to build, when to build it and what it should cost."}
+];
+var SERVICES = [
+  {p:"build", t:"Website Development", tag:"Fast, functional and future-ready websites.",
+   items:["Business, portfolio and informational websites","E-commerce websites on Shopify, WooCommerce or custom PHP","CMS websites on WordPress and Wix","Static and dynamic sites","API integration and payment gateways","SEO optimization built in"],
+   tech:["React.js","Next.js","HTML5","CSS3","Bootstrap","JavaScript","Node.js","Java Spring Boot","Python Django","Flask","PHP","MySQL","MongoDB","MERN","MEVN"]},
+  {p:"build", t:"Mobile App Development", tag:"From concept to code. Mobile apps that scale.",
+   items:["Android, iOS, cross-platform and hybrid apps","Custom UI/UX app design","App deployment and maintenance","API integration","Push notifications, Google Maps and payments"],
+   tech:["Kotlin","Java","Swift","C#","React Native","Flutter","Ionic","Firebase","Node.js","Spring Boot"]},
+  {p:"build", t:"UI/UX & Web Design", tag:"Design that delivers. Experiences that matter.",
+   items:["UI/UX for websites and apps","Wireframes and prototypes","Responsive, accessible custom web design","User flow optimization","Speed-focused layouts","Design system creation","Brand-aligned aesthetics","A/B testing of UI variations"], tech:[]},
+  {p:"build", t:"Cybersecurity & Maintenance", tag:"Protect, maintain and perform without worry.",
+   items:["Security audit and vulnerability scan","SSL setup and HTTPS redirect","Firewall, WAF and CDN configuration","Protection from malware, SQL injection and brute-force attacks","Secure payments and data encryption","Regular backups and disaster recovery","Website maintenance for speed, bugs and uptime","Version updates and plugin maintenance","Performance monitoring and debugging","Legal compliance with GDPR and the Indian IT Act"], tech:[]},
+
+  {p:"grow", t:"Digital Marketing", tag:"Reach more. Engage better. Convert faster.",
+   items:["Search engine optimization (SEO)","Social media optimization (SMO)","Meta ads on Facebook and Instagram","Google Ads: Search, Display and Shopping","Email and WhatsApp marketing","Cold calling campaigns","OTT marketing on Hotstar and MX Player","Newspaper marketing across Rajasthan","Content marketing for blogs, social and web","Marketing strategy and funnel planning","Account-based marketing (ABM)","Data-driven marketing","Local and micro-influencer tie-ups","Shorts, Reels and YouTube ads"],
+   tech:["Meta Ads","Google Ads","YouTube","WhatsApp","Hotstar","MX Player"]},
+  {p:"grow", t:"E-Commerce Solutions", tag:"Sell smart. Grow big. Rule online.",
+   items:["Store setup on Amazon, Flipkart, JioMart, Meesho and more","Product listing and optimization","Brand Registry and A+ content design","Sales analytics and ad campaign strategy","Product listing without a GST number","E-commerce marketing and automation"],
+   tech:["Amazon","Flipkart","JioMart","Meesho"]},
+  {p:"grow", t:"Google My Business Optimization", tag:"Be found. Be trusted. Be chosen locally.",
+   items:["Google Business Profile creation and setup","Google business card design","Google reviews strategy","GMB boost and local SEO ranking","Google Maps optimization","Google Maps visibility"], tech:[]},
+  {p:"grow", t:"Branding & Creative Production", tag:"Designs that speak. Brands that stick.",
+   items:["Logo, identity and stationery","Packaging and business cards","Product reels and motion graphics","Ad videos and company profiles","Social media creatives and story design"], tech:[]},
+  {p:"grow", t:"Photography & Videography", tag:"Visual stories that connect and convert.",
+   items:["Product shoots for e-commerce","Commercial ad photography","Reels and cinematic ad shoots","Professional video and photo editing"], tech:[]},
+
+  {p:"automate", t:"CRM & ERP Solutions", tag:"Automate your sales. Streamline your business.",
+   items:["CRM setup and customization for leads, deals and pipelines","ERP implementation for SMEs","Sales, marketing and support automation","CRM integration with websites, landing pages and WhatsApp","Workflow automation and task management","Data migration from one CRM to another","Role-based access and user management","Reports and dashboards for decision making"],
+   tech:["Salesforce","Zoho CRM","HubSpot","Odoo","Microsoft Dynamics","Freshsales","SAP Business One","Tally Prime","ERPNext","Zapier","Make","WhatsApp Cloud API"]},
+  {p:"automate", t:"Business Automation", tag:"Automate repetitive tasks and scale with ease.",
+   items:["Lead generation from Instagram DMs, Google Forms and landing pages","WhatsApp and email drip campaigns","CRM integration with website, landing pages and ad platforms","Invoice, payroll and HRMS automation","Attendance and leave tracking (biometric or app)","Follow-up and reminder bots for sales teams","Automated feedback and review collection","Auto-assigning leads to team members","Daily, weekly and monthly reports sent automatically","E-commerce order processing and customer notifications","Custom Zapier and Make workflows","Chatbots for WhatsApp, Messenger and websites"],
+   tech:["Zapier","Make","Pabbly","n8n","WhatsApp API","Twilio","Mailchimp","Keka","Kredily","RazorpayX","Jibble","ManyChat","Chatfuel","Python","Apps Script"]},
+  {p:"automate", t:"Data Analytics & AI", tag:"Turn data into decisions with smart insights.",
+   items:["Business intelligence dashboards","Sales, marketing and finance analytics","Customer behaviour analysis","Campaign performance tracking","Real-time analytics reports","Predictive and prescriptive analytics","Data cleaning, transformation and visualization","AI-based automation and recommendation systems","Data-driven decision support systems"],
+   tech:["Power BI","Tableau","Looker Studio","Python","Pandas","NumPy","R","PostgreSQL","BigQuery","Scikit-Learn","TensorFlow","Keras","OpenAI APIs","Google Analytics"]},
+
+  {p:"advise", t:"Business Growth Strategy", tag:"From startup to scale-up. We've been there.",
+   items:["Startup launch guidance","Business process setup","Cost and ROI planning","Team building and delegation","Brand positioning","Scaling online and offline"], tech:[], note:"Backed by 5+ years of running businesses ourselves."},
+  {p:"advise", t:"IT Consultancy & Support", tag:"Expert tech advice, always by your side.",
+   items:["Project-based technical consultancy","Launch planning for startups","Tech stack suggestions","Security, performance and scalability audits"], tech:[]}
+];
+
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+
+/* ================= RENDER ================= */
+var pillarsEl=document.getElementById("pillars"), html="";
+PILLARS.forEach(function(pl){
+  var list=SERVICES.filter(function(s){return s.p===pl.id});
+  html+='<div class="pillar"><div class="pillar-head" data-reveal><h3 class="pillar-name">'+pl.name+'</h3><p class="pillar-desc">'+pl.desc+'</p><span class="pillar-count">'+list.length+' services</span></div><div class="cards">';
+  list.forEach(function(s){
+    var i=SERVICES.indexOf(s), extra=s.items.length-3;
+    html+='<article class="card"><h3>'+esc(s.t)+'</h3><p class="tag">'+esc(s.tag)+'</p><ul>'+s.items.slice(0,3).map(function(x){return "<li>"+esc(x)+"</li>"}).join("")+'</ul>'+
+      (s.tech.length?'<div class="chips">'+s.tech.slice(0,4).map(function(x){return '<span class="chip">'+esc(x)+'</span>'}).join("")+(s.tech.length>4?'<span class="chip">+'+(s.tech.length-4)+'</span>':'')+'</div>':'')+
+      '<button class="more" data-i="'+i+'">See everything included'+(extra>0?' (+'+extra+')':'')+'</button></article>';
+  });
+  html+='</div></div>';
+});
+pillarsEl.innerHTML=html;
+
+/* ticker */
+var tick=SERVICES.map(function(s){return "<span>"+esc(s.t)+"</span>"}).join("");
+document.getElementById("ticker").innerHTML=tick+tick;
+
+/* tech rows */
+var T1=["React.js","Next.js","Node.js","Flutter","React Native","Kotlin","Swift","Spring Boot","Django","PHP","MongoDB","MySQL","Firebase","WordPress","Shopify","WooCommerce"];
+var T2=["Salesforce","Zoho CRM","HubSpot","Odoo","SAP Business One","Tally Prime","Power BI","Tableau","Looker Studio","BigQuery","TensorFlow","OpenAI APIs","Zapier","Make","n8n","Twilio","Mailchimp"];
+function row(a){var h=a.map(function(x){return "<span>"+esc(x)+"</span>"}).join("");return h+h}
+document.getElementById("tech1").innerHTML=row(T1);
+document.getElementById("tech2").innerHTML=row(T2);
+
+/* service select */
+var sel=document.getElementById("f-service");
+sel.innerHTML='<option value="Not sure yet">Not sure yet</option>'+SERVICES.map(function(s){return '<option>'+esc(s.t)+'</option>'}).join("");
+
+document.getElementById("year").textContent=new Date().getFullYear();
+
+/* ================= DIALOG ================= */
+var dlg=document.getElementById("dlg"), dlgBody=document.getElementById("dlg-body");
+pillarsEl.addEventListener("click",function(e){
+  var b=e.target.closest(".more"); if(!b) return;
+  var s=SERVICES[+b.dataset.i], pl=PILLARS.filter(function(p){return p.id===s.p})[0];
+  var msg=encodeURIComponent("Hi Zytexa, I'm interested in "+s.t+". Can we talk?");
+  dlgBody.innerHTML='<p class="dlg-pillar">'+pl.name+'</p><h3 id="dlg-title">'+esc(s.t)+'</h3><p class="tag">'+esc(s.tag)+(s.note?' '+esc(s.note):'')+'</p>'+
+    '<h4>What\'s included</h4><ul class="dlg-list">'+s.items.map(function(x){return "<li>"+esc(x)+"</li>"}).join("")+'</ul>'+
+    (s.tech.length?'<h4>Tools and technologies</h4><div class="chips">'+s.tech.map(function(x){return '<span class="chip">'+esc(x)+'</span>'}).join("")+'</div>':'')+
+    '<div class="dlg-cta"><a class="btn btn-main" href="https://wa.me/'+WA+'?text='+msg+'" target="_blank" rel="noopener">Ask about '+esc(s.t)+'</a><a class="btn btn-ghost" href="#contact" data-close data-svc="'+esc(s.t)+'">Fill the form</a></div>';
+  if(dlg.showModal) dlg.showModal(); else dlg.setAttribute("open","");
+});
+function closeDlg(){ if(dlg.close) dlg.close(); else dlg.removeAttribute("open"); }
+document.getElementById("dlg-close").addEventListener("click",closeDlg);
+dlg.addEventListener("click",function(e){
+  if(e.target===dlg){closeDlg();return}
+  var a=e.target.closest("[data-close]"); if(a){ sel.value=a.dataset.svc; closeDlg(); }
+});
+
+/* ================= NAV ================= */
+var nav=document.getElementById("nav"), menuBtn=document.getElementById("menu-btn");
+function onScrollNav(){ nav.classList.toggle("scrolled", window.scrollY>30) }
+onScrollNav();
+window.addEventListener("scroll",onScrollNav,{passive:true});
+menuBtn.addEventListener("click",function(){
+  var o=nav.classList.toggle("open"); menuBtn.setAttribute("aria-expanded",o); menuBtn.setAttribute("aria-label",o?"Close menu":"Open menu");
+});
+document.getElementById("nav-links").addEventListener("click",function(e){
+  if(e.target.tagName==="A"){nav.classList.remove("open");menuBtn.setAttribute("aria-expanded","false")}
+});
+
+/* ================= REVEAL ================= */
+if("IntersectionObserver" in window){
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target)}})},{rootMargin:"0px 0px -12% 0px"});
+  document.querySelectorAll("[data-reveal], #steps").forEach(function(el){io.observe(el)});
+}else{document.querySelectorAll("[data-reveal], #steps").forEach(function(el){el.classList.add("in")})}
+
+/* ================= CARD TILT ================= */
+if(window.matchMedia("(hover: hover) and (pointer: fine)").matches && !reduce){
+  pillarsEl.addEventListener("pointermove",function(e){
+    var c=e.target.closest(".card"); if(!c) return;
+    var r=c.getBoundingClientRect(), x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height;
+    c.style.setProperty("--mx",(x*100)+"%"); c.style.setProperty("--my",(y*100)+"%");
+    c.style.transform="perspective(900px) rotateX("+((0.5-y)*7)+"deg) rotateY("+((x-0.5)*9)+"deg) translateZ(0)";
+  });
+  pillarsEl.addEventListener("pointerout",function(e){
+    var c=e.target.closest(".card"); if(c && !c.contains(e.relatedTarget)) c.style.transform="";
+  });
+}
+
+/* ================= WORD SWAP ================= */
+var words=["builds","sells","automates","grows"], wi=0, swap=document.getElementById("swap");
+var glyphs="ZYTEXA<>/#*+=";
+function scramble(to){
+  var from=swap.textContent, len=Math.max(from.length,to.length), start=performance.now(), dur=650;
+  (function f(now){
+    var p=Math.min(1,(now-start)/dur), out="";
+    for(var i=0;i<len;i++){
+      if(p*len>i+ (1-p)*2) out+=to[i]||"";
+      else out+= (i<to.length? glyphs[(Math.random()*glyphs.length)|0] : "");
+    }
+    swap.textContent=out;
+    if(p<1) requestAnimationFrame(f); else swap.textContent=to;
+  })(start);
+}
+if(!reduce) setInterval(function(){ if(document.hidden) return; wi=(wi+1)%words.length; scramble(words[wi]) },2600);
+
+/* ================= FORM ================= */
+var form=document.getElementById("form"), status=document.getElementById("form-status"), via="wa";
+form.addEventListener("click",function(e){var b=e.target.closest("[data-via]"); if(b) via=b.dataset.via});
+function setErr(id,input,msg){document.getElementById(id).textContent=msg;input.setAttribute("aria-invalid",msg?"true":"false")}
+form.addEventListener("submit",function(e){
+  e.preventDefault();
+  var fN=document.getElementById("f-name"),fP=document.getElementById("f-phone"),fE=document.getElementById("f-email"),fM=document.getElementById("f-msg");
+  var n=fN.value.trim(), ph=fP.value.trim(), em=fE.value.trim(), sv=sel.value, m=fM.value.trim(), ok=true, first=null;
+  var digits=ph.replace(/\D/g,"");
+  if(!n){setErr("e-name",fN,"Enter your name so we know who to reply to.");ok=false;first=first||fN}else setErr("e-name",fN,"");
+  if(digits.length<10||digits.length>13){setErr("e-phone",fP,"Enter a 10-digit mobile number.");ok=false;first=first||fP}else setErr("e-phone",fP,"");
+  if(em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){setErr("e-email",fE,"Check the email address, or leave it empty.");ok=false;first=first||fE}else setErr("e-email",fE,"");
+  if(m.length<5){setErr("e-msg",fM,"Add a line or two about what you need.");ok=false;first=first||fM}else setErr("e-msg",fM,"");
+  if(!ok){first.focus();status.textContent="";return}
+  var text="Hi Zytexa, I'm "+n+".\nService: "+sv+"\nPhone: "+ph+(em?"\nEmail: "+em:"")+"\n\n"+m;
+  if(via==="mail"){
+    location.href="mailto:contact@zytexa.com?cc=Zytexatechnology@gmail.com&subject="+encodeURIComponent("Project enquiry: "+sv+" ("+n+")")+"&body="+encodeURIComponent(text);
+    status.textContent="Your email app is opening with the message filled in. Press send there to reach us.";
+  }else{
+    window.open("https://wa.me/"+WA+"?text="+encodeURIComponent(text),"_blank","noopener");
+    status.textContent="WhatsApp is opening with your message filled in. Press send there to reach us.";
+  }
+});
+
+/* ================= HERO 3D PARTICLE LOGO ================= */
+var canvas=document.getElementById("scene"), ctx=canvas.getContext("2d",{alpha:true});
+var hero=document.getElementById("hero");
+var RAW=atob(window.ZYTEXA_POINTS), TOTAL=RAW.length/3, ASPECT=0.9676;
+var N, D, tx,ty,tz,sx,sy,sz,dx,dy,dz,del,col,ox,oy, W,H,dpr,isMob,cx,cy,size;
+var sprites=[mkSprite("70,130,255"),mkSprite("25,200,225"),mkSprite("150,190,255")];
+function mkSprite(rgb){
+  var c=document.createElement("canvas"); c.width=c.height=48; var g=c.getContext("2d");
+  var gr=g.createRadialGradient(24,24,0,24,24,24);
+  gr.addColorStop(0,"rgba(255,255,255,1)"); gr.addColorStop(.18,"rgba("+rgb+",1)"); gr.addColorStop(.45,"rgba("+rgb+",.35)"); gr.addColorStop(1,"rgba("+rgb+",0)");
+  g.fillStyle=gr; g.fillRect(0,0,48,48); return c;
+}
+function rnd(a,b){return a+Math.random()*(b-a)}
+function build(){
+  isMob = window.innerWidth<=900;
+  N = Math.min(TOTAL, isMob?2200:4400); D = isMob?90:220;
+  var M=N+D;
+  tx=new Float32Array(M);ty=new Float32Array(M);tz=new Float32Array(M);sx=new Float32Array(M);sy=new Float32Array(M);sz=new Float32Array(M);
+  dx=new Float32Array(M);dy=new Float32Array(M);dz=new Float32Array(M);del=new Float32Array(M);col=new Uint8Array(M);ox=new Float32Array(M);oy=new Float32Array(M);
+  for(var i=0;i<N;i++){
+    var x=RAW.charCodeAt(i*3)/255-.5, y=RAW.charCodeAt(i*3+1)/255-.5, c=RAW.charCodeAt(i*3+2);
+    tx[i]=x*ASPECT; ty[i]=y; tz[i]=rnd(-.07,.07)+(c?.07:0); col[i]=c;
+    var th=rnd(0,Math.PI*2), ph=Math.acos(rnd(-1,1)), r=rnd(1.3,2.4);
+    sx[i]=r*Math.sin(ph)*Math.cos(th); sy[i]=r*Math.sin(ph)*Math.sin(th); sz[i]=r*Math.cos(ph);
+    var th2=rnd(0,Math.PI*2), ph2=Math.acos(rnd(-1,1)), r2=rnd(.8,2.2);
+    dx[i]=r2*Math.sin(ph2)*Math.cos(th2); dy[i]=r2*Math.sin(ph2)*Math.sin(th2); dz[i]=r2*Math.cos(ph2);
+    del[i]=rnd(0,.55)+ (1-(y+.5))*.25;
+  }
+  for(var j=N;j<M;j++){ tx[j]=rnd(-2.2,2.2); ty[j]=rnd(-1.3,1.3); tz[j]=rnd(-1.5,.6); col[j]=2; del[j]=rnd(0,1); }
+}
+function layout(){
+  var rect=hero.getBoundingClientRect();
+  W=rect.width; H=rect.height;
+  dpr=Math.min(window.devicePixelRatio||1, isMob?1.5:1.75);
+  canvas.width=Math.round(W*dpr); canvas.height=Math.round(H*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  if(isMob){ size=Math.min(W*.62, H*.34); cx=W/2; cy=Math.max(H*.25, 72+size*.58); }
+  else { size=Math.min(H*.66, W*.36); cx=W*.72; cy=H*.52; }
+}
+var lastW=0;
+function resize(){
+  var w=window.innerWidth;
+  if(Math.abs(w-lastW)>2 || !tx){ lastW=w; var wasMob=isMob; isMob=w<=900; if(!tx||wasMob!==isMob) build(); }
+  layout(); if(!running) frame(performance.now());
+}
+
+var mx=0,my=0,rx=0,ry=0,px=-9999,py=-9999, t0=performance.now(), running=false, visible=true, scrollP=0;
+window.addEventListener("pointermove",function(e){
+  mx=(e.clientX/window.innerWidth-.5)*2; my=(e.clientY/window.innerHeight-.5)*2;
+  var r=canvas.getBoundingClientRect(); px=e.clientX-r.left; py=e.clientY-r.top;
+},{passive:true});
+window.addEventListener("pointerleave",function(){px=py=-9999});
+document.addEventListener("pointerout",function(e){if(!e.relatedTarget){px=py=-9999}});
+window.addEventListener("scroll",function(){ scrollP=Math.min(1,Math.max(0,window.scrollY/(H||1))) },{passive:true});
+
+function frame(now){
+  var t=(now-t0)/1000;
+  var ay = reduce?0: mx*.5 + Math.sin(t*.35)*.22, ax = reduce?0: my*.25 + Math.sin(t*.27)*.05;
+  ry+=(ay-ry)*.06; rx+=(ax-rx)*.06;
+  var cY=Math.cos(ry), sY=Math.sin(ry), cX=Math.cos(rx), sX=Math.sin(rx);
+  var F=2.6, sp=scrollP*1.6, fade=1-scrollP*.85;
+  ctx.clearRect(0,0,W,H);
+  ctx.globalCompositeOperation="lighter";
+  var base=Math.max(isMob?4.5:5, size/78), R=isMob?70:120, R2=R*R;
+  var M=N+D;
+  for(var i=0;i<M;i++){
+    var x,y,z,e;
+    if(i<N){
+      var p=reduce?1:(t-del[i])/1.7; p=p<0?0:p>1?1:p; e=1-Math.pow(1-p,3);
+      x=sx[i]+(tx[i]-sx[i])*e; y=sy[i]+(ty[i]-sy[i])*e; z=sz[i]+(tz[i]-sz[i])*e;
+      if(e<1){ var a=(1-e)*2.4, ca=Math.cos(a), sa=Math.sin(a), nx=x*ca-z*sa; z=x*sa+z*ca; x=nx; }
+      z+=Math.sin(t*1.5+ty[i]*7+tx[i]*3)*.012;
+      if(sp>0){ x+=dx[i]*sp; y+=dy[i]*sp; z+=dz[i]*sp; }
+    }else{
+      e=reduce?1:Math.min(1,Math.max(0,(t-del[i])/1.5));
+      x=tx[i]; y=ty[i]+(reduce?0:Math.sin(t*.2+i)*.02); z=tz[i];
+    }
+    var x1=x*cY+z*sY, z1=-x*sY+z*cY;
+    var y1=y*cX-z1*sX, z2=y*sX+z1*cX;
+    var persp=F/(F-z2); if(persp<=0||persp>6) continue;
+    var X=cx+x1*size*persp, Y=cy+y1*size*persp;
+    if(i<N){
+      var ddx=X-px, ddy=Y-py, d2=ddx*ddx+ddy*ddy;
+      if(d2<R2 && !reduce){ var d=Math.sqrt(d2)||1, f=(1-d/R); f=f*f*R*.55; ox[i]+=((ddx/d)*f-ox[i])*.22; oy[i]+=((ddy/d)*f-oy[i])*.22; }
+      else { ox[i]*=.9; oy[i]*=.9; }
+      X+=ox[i]; Y+=oy[i];
+    }
+    if(X<-20||X>W+20||Y<-20||Y>H+20) continue;
+    var s=(i<N? base*(col[i]?1.12:1) : base*.7)*persp;
+    ctx.globalAlpha=(i<N? .9 : .35*e)*fade*(i<N? (0.35+0.65*Math.min(1,e*1.4)) : 1);
+    ctx.drawImage(sprites[col[i]], X-s/2, Y-s/2, s, s);
+  }
+  ctx.globalAlpha=1; ctx.globalCompositeOperation="source-over";
+}
+function loop(now){
+  if(!running) return;
+  frame(now);
+  requestAnimationFrame(loop);
+}
+function start(){ if(running||reduce) return; running=true; requestAnimationFrame(loop); }
+function stop(){ running=false; }
+
+resize();
+if(!reduce){
+  if("IntersectionObserver" in window){
+    new IntersectionObserver(function(es){ visible=es[0].isIntersecting; if(visible&&!document.hidden) start(); else stop(); }).observe(hero);
+  } else start();
+  document.addEventListener("visibilitychange",function(){ if(document.hidden) stop(); else if(visible) start(); });
+}
+var rt; window.addEventListener("resize",function(){ clearTimeout(rt); rt=setTimeout(resize,120); });
+})();
