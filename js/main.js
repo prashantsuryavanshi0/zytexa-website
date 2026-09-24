@@ -191,7 +191,7 @@ function mkSprite(rgb){
 function rnd(a,b){return a+Math.random()*(b-a)}
 function build(){
   isMob = window.innerWidth<=900;
-  N = Math.min(TOTAL, isMob?2200:4400); D = isMob?90:220;
+  N = Math.min(TOTAL, isMob?2500:7500); D = isMob?90:220;
   var M=N+D;
   tx=new Float32Array(M);ty=new Float32Array(M);tz=new Float32Array(M);sx=new Float32Array(M);sy=new Float32Array(M);sz=new Float32Array(M);
   dx=new Float32Array(M);dy=new Float32Array(M);dz=new Float32Array(M);del=new Float32Array(M);col=new Uint8Array(M);ox=new Float32Array(M);oy=new Float32Array(M);
@@ -202,7 +202,7 @@ function build(){
     sx[i]=r*Math.sin(ph)*Math.cos(th); sy[i]=r*Math.sin(ph)*Math.sin(th); sz[i]=r*Math.cos(ph);
     var th2=rnd(0,Math.PI*2), ph2=Math.acos(rnd(-1,1)), r2=rnd(.8,2.2);
     dx[i]=r2*Math.sin(ph2)*Math.cos(th2); dy[i]=r2*Math.sin(ph2)*Math.sin(th2); dz[i]=r2*Math.cos(ph2);
-    del[i]=rnd(0,.55)+ (1-(y+.5))*.25;
+    del[i]=rnd(0,.15) + (ty[i]+0.5)*0.5;
   }
   for(var j=N;j<M;j++){ tx[j]=rnd(-2.2,2.2); ty[j]=rnd(-1.3,1.3); tz[j]=rnd(-1.5,.6); col[j]=2; del[j]=rnd(0,1); }
 }
@@ -239,7 +239,7 @@ function frame(now){
   var F=2.6, sp=scrollP*1.6, fade=1-scrollP*.85;
   ctx.clearRect(0,0,W,H);
   ctx.globalCompositeOperation="lighter";
-  var base=Math.max(isMob?4.5:5, size/78), R=isMob?70:120, R2=R*R;
+  var base=Math.max(isMob?4.5:5, size/95), R=isMob?70:120, R2=R*R;
   var M=N+D;
   for(var i=0;i<M;i++){
     var x,y,z,e;
@@ -249,6 +249,7 @@ function frame(now){
       if(e<1){ var a=(1-e)*2.4, ca=Math.cos(a), sa=Math.sin(a), nx=x*ca-z*sa; z=x*sa+z*ca; x=nx; }
       z+=Math.sin(t*1.5+ty[i]*7+tx[i]*3)*.012;
       if(sp>0){ x+=dx[i]*sp; y+=dy[i]*sp; z+=dz[i]*sp; }
+      if(scrollP>0.1){ ox[i]+=tx[i]*sp*4; oy[i]+=ty[i]*sp*4; }
     }else{
       e=reduce?1:Math.min(1,Math.max(0,(t-del[i])/1.5));
       x=tx[i]; y=ty[i]+(reduce?0:Math.sin(t*.2+i)*.02); z=tz[i];
@@ -259,8 +260,8 @@ function frame(now){
     var X=cx+x1*size*persp, Y=cy+y1*size*persp;
     if(i<N){
       var ddx=X-px, ddy=Y-py, d2=ddx*ddx+ddy*ddy;
-      if(d2<R2 && !reduce){ var d=Math.sqrt(d2)||1, f=(1-d/R); f=f*f*R*.55; ox[i]+=((ddx/d)*f-ox[i])*.22; oy[i]+=((ddy/d)*f-oy[i])*.22; }
-      else { ox[i]*=.9; oy[i]*=.9; }
+      if(d2<R2 && !reduce){ var d=Math.sqrt(d2)||1, f=(1-d/R); f=f*f*R*1.1; ox[i]+=((ddx/d)*f-ox[i])*.22; oy[i]+=((ddy/d)*f-oy[i])*.22; }
+      else { ox[i]*=.82; oy[i]*=.82; }
       X+=ox[i]; Y+=oy[i];
     }
     if(X<-20||X>W+20||Y<-20||Y>H+20) continue;
