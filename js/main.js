@@ -268,15 +268,15 @@ if(!reduce){
     uRaf=0;
     var vh=window.innerHeight, off=Math.min(window.innerWidth*.45,460);
     usp.forEach(function(el,i){
-      var top=el.getBoundingClientRect().top, p=(vh*.98-top)/(vh*.42);
+      var top=el.getBoundingClientRect().top, p=(vh*1.08-top)/(vh*.38);
       p=p<0?0:p>1?1:p;
       if(p>=1){ if(el._u){ el.style.transform=""; el.style.opacity=""; el.style.transition=""; el.style.borderRadius=""; el._u=false; } return; }
-      var e=1-Math.pow(1-p,3), d=1-e, dir=i%2?1:-1, th=d*Math.PI*.75, R=off*.95;
+      var e=1-Math.pow(1-p,3), d=1-e, dir=i%2?1:-1, th=d*Math.PI*.6, R=off*.7;
       el._u=true;
       el.style.transition="none";
-      el.style.opacity=Math.min(1,e*1.6);
+      el.style.opacity=Math.min(1,e*3);
       el.style.borderRadius=(24+(el.offsetHeight/2-24)*d)+"px";
-      el.style.transform="perspective(1300px) translate3d("+(dir*R*Math.sin(th))+"px,"+(R*.55*(1-Math.cos(th)))+"px,"+(-160*d)+"px) rotateY("+(-dir*22*d)+"deg)";
+      el.style.transform="perspective(1300px) translate3d("+(dir*R*Math.sin(th))+"px,"+(R*.35*(1-Math.cos(th)))+"px,"+(-160*d)+"px) rotateY("+(-dir*22*d)+"deg)";
     });
   }
   function uSched(){ if(!uRaf) uRaf=requestAnimationFrame(uUpdate); }
