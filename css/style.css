@@ -241,6 +241,10 @@ dialog h4{font-size:1rem;margin:28px 0 12px;font-weight:600}
 .info .info-card a{transition:color .2s}
 .info .info-card a:hover{color:var(--cyan)}
 
+/* ---------- pillar name fits its column ---------- */
+.pillar-head{container-type:inline-size}
+.pillar-name{font-size:clamp(2rem,11cqw,5rem);overflow-wrap:anywhere}
+
 /* ---------- responsive ---------- */
 @media (max-width:1080px){
   .cards{grid-template-columns:1fr}
