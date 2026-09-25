@@ -326,6 +326,80 @@ form.addEventListener("submit",function(e){
   }
 });
 
+/* ================= SOUND (Web Audio, synthesized, no files) ================= */
+var AC=window.AudioContext||window.webkitAudioContext, actx=null, master=null, sndBus=null, noiseBuf=null;
+function lsGet(k){ try{ return localStorage.getItem(k) }catch(x){ return null } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v) }catch(x){} }
+var sndOn=lsGet("zx_sound")!=="off";
+function audio(){
+  if(!AC) return null;
+  if(!actx){
+    try{ actx=new AC(); }catch(e){ return null; }
+    master=actx.createGain(); master.gain.value=.55; master.connect(actx.destination);
+    var dl=actx.createDelay(); dl.delayTime.value=.19; var fb=actx.createGain(); fb.gain.value=.32;
+    var lp=actx.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=2600;
+    sndBus=actx.createGain(); sndBus.gain.value=1; sndBus.connect(master);
+    sndBus.connect(dl); dl.connect(lp); lp.connect(fb); fb.connect(dl); lp.connect(master);
+    noiseBuf=actx.createBuffer(1,Math.floor(actx.sampleRate*.05),actx.sampleRate);
+    var d=noiseBuf.getChannelData(0); for(var i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+  }
+  if(actx.state==="suspended") actx.resume();
+  return actx;
+}
+function tone(f,t,dur,g,type){
+  var o=actx.createOscillator(), e=actx.createGain();
+  o.type=type||"sine"; o.frequency.value=f;
+  e.gain.setValueAtTime(0.0001,t); e.gain.exponentialRampToValueAtTime(g,t+.02); e.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(e); e.connect(sndBus); o.start(t); o.stop(t+dur+.05);
+}
+function playIntro(){
+  if(!sndOn) return false;
+  var c=audio(); if(!c||c.state!=="running") return false;
+  var t=c.currentTime+.05, n=[523.25,659.25,783.99,1046.5];
+  n.forEach(function(f,i){ tone(f,t+i*.14,i===3?1.9:.9,.05,"sine"); tone(f*2,t+i*.14,.5,.012,"sine"); });
+  tone(261.63,t,2.2,.03,"triangle"); tone(392,t+.1,2.0,.02,"sine");
+  return true;
+}
+function tick(t,g){
+  var s=actx.createBufferSource(), bp=actx.createBiquadFilter(), e=actx.createGain();
+  s.buffer=noiseBuf; bp.type="bandpass"; bp.frequency.value=rnd(1700,3400); bp.Q.value=5;
+  e.gain.setValueAtTime(g,t); e.gain.exponentialRampToValueAtTime(0.0001,t+.03);
+  s.connect(bp); bp.connect(e); e.connect(master); s.start(t); s.stop(t+.05);
+  var o=actx.createOscillator(), oe=actx.createGain();
+  o.type="triangle"; o.frequency.value=rnd(850,1500);
+  oe.gain.setValueAtTime(g*.35,t); oe.gain.exponentialRampToValueAtTime(0.0001,t+.025);
+  o.connect(oe); oe.connect(master); o.start(t); o.stop(t+.04);
+}
+function playShatter(delays){
+  if(!sndOn) return;
+  var c=audio(); if(!c) return;
+  function run(){ var t0=c.currentTime+.03; delays.forEach(function(d){ tick(t0+d+rnd(0,.22),rnd(.05,.11)); }); }
+  if(c.state==="running") run(); else c.resume().then(run,function(){});
+}
+(function(){
+  var b=document.createElement("button"); b.type="button"; b.className="snd-btn"; b.id="snd-btn";
+  b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path class="w" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/><path class="x" d="m16 9 5 6m0-6-5 6"/></svg>';
+  function paint(){ b.classList.toggle("off",!sndOn); b.setAttribute("aria-pressed",String(sndOn)); b.setAttribute("aria-label",sndOn?"Sound on. Turn sound off":"Sound off. Turn sound on"); }
+  paint(); document.body.appendChild(b);
+  b.addEventListener("click",function(){ sndOn=!sndOn; lsSet("zx_sound",sndOn?"on":"off"); paint(); if(sndOn) audio(); });
+  /* first visit: soft chime with the logo assembly (browsers allow audio only after a first tap/key, so it may wait for that) */
+  if(lsGet("zx_intro")==="1" || !AC || !sndOn) return;
+  var done=false;
+  function go(){
+    if(done) return;
+    if(playIntro()){ done=true; lsSet("zx_intro","1"); off(); }
+  }
+  function onGesture(){
+    if(window.scrollY>window.innerHeight*.9){ off(); return; }
+    var c=audio(); if(!c) return;
+    if(c.state==="running") go(); else c.resume().then(go,function(){});
+  }
+  var ev=["pointerdown","keydown","touchstart"];
+  function off(){ ev.forEach(function(e){ window.removeEventListener(e,onGesture,true) }); }
+  ev.forEach(function(e){ window.addEventListener(e,onGesture,true) });
+  try{ var c0=audio(); if(c0 && c0.state==="running") go(); }catch(x){}
+})();
+
 /* ================= LEAD POPUP (once per session, after the hero) ================= */
 var leadDlg=document.getElementById("lead"), leadCard=document.getElementById("lead-card"), lform=document.getElementById("lform"), lstatus=document.getElementById("lform-status"), lvia="wa", leadBusy=false;
 document.getElementById("l-service").innerHTML=sel.innerHTML;
@@ -363,11 +437,11 @@ function leadClose(){
     s.className="shard";
     s.style.clipPath="inset("+(ry/rows*100)+"% "+(100-(cx2+1)/cols*100)+"% "+(100-(ry+1)/rows*100)+"% "+(cx2/cols*100)+"%)";
     s.style.transformOrigin=((cx2+.5)/cols*100)+"% "+((ry+.5)/rows*100)+"%";
-    s.style.transitionDelay=(Math.random()*.28)+"s";
+    s._d=Math.random()*.28; s.style.transitionDelay=s._d+"s";
     s._to="translate("+(((cx2+.5)/cols-.5)*r.width*.9+rnd(-40,40))+"px,"+(((ry+.5)/rows-.5)*r.height*.5+rnd(260,620))+"px) rotate("+rnd(-70,70)+"deg) scale("+rnd(.5,.9)+")";
     wrap.appendChild(s); shards.push(s);
   }
-  leadDlg.appendChild(wrap);
+  leadDlg.appendChild(wrap); playShatter(shards.map(function(s){return s._d}));
   leadCard.classList.add("gone"); leadDlg.classList.add("closing");
   requestAnimationFrame(function(){ requestAnimationFrame(function(){
     shards.forEach(function(s){ s.style.transform=s._to; s.style.opacity="0"; });

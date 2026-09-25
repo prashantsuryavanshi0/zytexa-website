@@ -317,6 +317,14 @@ html.lead-lock{overflow:hidden}
 
 #why{overflow-x:clip}
 
+/* ---------- sound toggle ---------- */
+.snd-btn{position:fixed;left:max(18px,env(safe-area-inset-left,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;width:46px;height:46px;border-radius:50%;border:1px solid var(--line-strong);background:rgba(10,22,54,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--ice);cursor:pointer;display:grid;place-items:center;transition:border-color .2s,transform .25s}
+.snd-btn:hover{border-color:var(--cyan);transform:translateY(-2px)}
+.snd-btn svg{width:22px;height:22px}
+.snd-btn .x{display:none}
+.snd-btn.off .w{display:none}
+.snd-btn.off .x{display:block}
+
 /* ---------- responsive ---------- */
 @media (max-width:1080px){
   .cards{grid-template-columns:1fr}
