@@ -275,7 +275,7 @@ if(!reduce){
       el._u=true;
       el.style.transition="none";
       el.style.opacity=e;
-      el.style.transform="perspective(1300px) translate3d("+(dir*off*d)+"px,"+(50*d)+"px,"+(-260*d)+"px) rotateY("+(-dir*62*d)+"deg) rotateX("+(14*d)+"deg)";
+      el.style.transform="perspective(1300px) translate3d("+(dir*off*d)+"px,"+(50*d)+"px,"+(-200*d)+"px) rotateZ("+(dir*360*d)+"deg) rotateY("+(-dir*35*d)+"deg)";
     });
   }
   function uSched(){ if(!uRaf) uRaf=requestAnimationFrame(uUpdate); }
