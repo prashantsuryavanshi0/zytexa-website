@@ -62,7 +62,7 @@ PILLARS.forEach(function(pl){
     var i=SERVICES.indexOf(s), extra=s.items.length-3;
     html+='<article class="card" style="--i:'+k+'"><h3>'+esc(s.t)+'</h3><p class="tag">'+esc(s.tag)+'</p><ul>'+s.items.slice(0,3).map(function(x){return "<li>"+esc(x)+"</li>"}).join("")+'</ul>'+
       (s.tech.length?'<div class="chips">'+s.tech.slice(0,4).map(function(x){return '<span class="chip">'+esc(x)+'</span>'}).join("")+(s.tech.length>4?'<span class="chip">+'+(s.tech.length-4)+'</span>':'')+'</div>':'')+
-      '<button class="more" data-i="'+i+'">See everything included'+(extra>0?' (+'+extra+')':'')+'</button><span class="card-logo" aria-hidden="true"><img src="assets/zytexa-logo.webp" alt="" width="155" height="160" loading="lazy" decoding="async"></span></article>';
+      '<button class="more" data-i="'+i+'">See everything included'+(extra>0?' (+'+extra+')':'')+'</button><span class="card-logo" aria-hidden="true"><canvas width="160" height="160"></canvas></span></article>';
   });
   html+='</div></div>';
 });
@@ -269,6 +269,63 @@ if(!reduce){
   window.addEventListener("scroll",dSched,{passive:true});
   window.addEventListener("resize",dSched);
   dSched();
+}
+
+/* ================= CARD BACKGROUND: mini particle logo (same look as the hero) ================= */
+if(!reduce && window.ZYTEXA_POINTS){
+  var LG=null, lgActive=[], lgRaf=0, lgLast=0;
+  function lgInit(){
+    var raw=atob(window.ZYTEXA_POINTS), total=raw.length/3, K=window.innerWidth<=900?260:420, step=Math.max(1,Math.floor(total/K));
+    LG={n:0,tx:[],ty:[],tz:[],sx:[],sy:[],sz:[],del:[],col:[]};
+    for(var i=0;i<total && LG.n<K;i+=step){
+      var x=raw.charCodeAt(i*3)/255-.5, y=raw.charCodeAt(i*3+1)/255-.5, c=raw.charCodeAt(i*3+2);
+      var th=rnd(0,Math.PI*2), ph=Math.acos(rnd(-1,1)), r=rnd(1.3,2.2);
+      LG.tx.push(x*.9676); LG.ty.push(y); LG.tz.push(rnd(-.06,.06)+(c?.06:0)); LG.col.push(c>2?0:c);
+      LG.sx.push(r*Math.sin(ph)*Math.cos(th)); LG.sy.push(r*Math.sin(ph)*Math.sin(th)); LG.sz.push(r*Math.cos(ph));
+      LG.del.push(rnd(0,.15)+(y+.5)*.5); LG.n++;
+    }
+  }
+  function lgDraw(cv,t){
+    var g=cv._g||(cv._g=cv.getContext("2d")), S=cv.width, ry=Math.sin(t*.6)*.55, rx=Math.sin(t*.45)*.12;
+    var cY=Math.cos(ry), sY=Math.sin(ry), cX=Math.cos(rx), sX=Math.sin(rx), F=2.6;
+    g.clearRect(0,0,S,S); g.globalCompositeOperation="lighter";
+    for(var i=0;i<LG.n;i++){
+      var p=(t-LG.del[i])/1.5; p=p<0?0:p>1?1:p; var e=1-Math.pow(1-p,3);
+      var x=LG.sx[i]+(LG.tx[i]-LG.sx[i])*e, y=LG.sy[i]+(LG.ty[i]-LG.sy[i])*e, z=LG.sz[i]+(LG.tz[i]-LG.sz[i])*e;
+      if(e<1){ var a=(1-e)*2.4, ca=Math.cos(a), sa=Math.sin(a), nx=x*ca-z*sa; z=x*sa+z*ca; x=nx; }
+      var x1=x*cY+z*sY, z1=-x*sY+z*cY, y1=y*cX-z1*sX, z2=y*sX+z1*cX, persp=F/(F-z2);
+      if(persp<=0||persp>6) continue;
+      var s=6.5*persp*(S/160);
+      g.globalAlpha=.9*(.35+.65*Math.min(1,e*1.4));
+      g.drawImage(sprites[LG.col[i]],S/2+x1*S*.78*persp-s/2,S/2+y1*S*.78*persp-s/2,s,s);
+    }
+    g.globalAlpha=1; g.globalCompositeOperation="source-over";
+  }
+  function lgLoop(now){
+    lgRaf=0;
+    if(!lgActive.length||document.hidden) return;
+    var settled=true;
+    lgActive.forEach(function(cv){ if(now-cv._t0<2400) settled=false; });
+    if(settled && now-lgLast<33){ lgRaf=requestAnimationFrame(lgLoop); return; }
+    lgLast=now;
+    lgActive.forEach(function(cv){ lgDraw(cv,(now-cv._t0)/1000); });
+    lgRaf=requestAnimationFrame(lgLoop);
+  }
+  function lgKick(){ if(!lgRaf && lgActive.length) lgRaf=requestAnimationFrame(lgLoop); }
+  document.addEventListener("visibilitychange",lgKick);
+  if("IntersectionObserver" in window){
+    var lgIO=new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        var cv=en.target, k=lgActive.indexOf(cv);
+        if(en.isIntersecting){
+          if(!LG) lgInit();
+          if(k<0){ if(!cv._t0) cv._t0=performance.now(); lgActive.push(cv); }
+        }else if(k>=0){ lgActive.splice(k,1); }
+      });
+      lgKick();
+    },{rootMargin:"60px"});
+    pillarsEl.querySelectorAll(".card-logo canvas").forEach(function(cv){ lgIO.observe(cv); });
+  }
 }
 
 /* ================= USP CARDS: 3D fly-in from both sides (scroll-scrubbed) ================= */
