@@ -82,12 +82,53 @@ if("IntersectionObserver" in window){
 var tick=SERVICES.map(function(s){return "<span>"+esc(s.t)+"</span>"}).join("");
 document.getElementById("ticker").innerHTML=tick+tick;
 
-/* tech rows */
-var T1=["React.js","Next.js","Node.js","Flutter","React Native","Kotlin","Swift","Spring Boot","Django","PHP","MongoDB","MySQL","Firebase","WordPress","Shopify","WooCommerce"];
-var T2=["Salesforce","Zoho CRM","HubSpot","Odoo","SAP Business One","Tally Prime","Power BI","Tableau","Looker Studio","BigQuery","TensorFlow","OpenAI APIs","Zapier","Make","n8n","Twilio","Mailchimp"];
-function row(a){var h=a.map(function(x){return "<span>"+esc(x)+"</span>"}).join("");return h+h}
-document.getElementById("tech1").innerHTML=row(T1);
-document.getElementById("tech2").innerHTML=row(T2);
+/* tech stack book */
+var BOOK=[
+  {t:"Front-end",items:["React.js","Next.js","HTML5","CSS3","JavaScript","Bootstrap"]},
+  {t:"Back-end",items:["Node.js","Java Spring Boot","Python Django","Flask","PHP"]},
+  {t:"Mobile apps",items:["Kotlin","Java","Swift","React Native","Flutter","Ionic"]},
+  {t:"Data and cloud",items:["MySQL","MongoDB","PostgreSQL","Firebase","BigQuery"]},
+  {t:"CMS and commerce",items:["WordPress","Shopify","WooCommerce","Amazon","Flipkart","JioMart","Meesho"]},
+  {t:"CRM and ERP",items:["Salesforce","Zoho CRM","HubSpot","Odoo","SAP Business One","Tally Prime","ERPNext","Microsoft Dynamics"]},
+  {t:"Automation",items:["Zapier","Make","n8n","Pabbly","Twilio","Mailchimp","WhatsApp API"]},
+  {t:"Analytics and AI",items:["Power BI","Tableau","Looker Studio","Python","TensorFlow","OpenAI APIs","Google Analytics"]}
+];
+(function(){
+  var bookEl=document.getElementById("book"), mq=window.matchMedia("(max-width: 700px)");
+  var idx=0, L=0, leaves=[], timers=[], hover=false, vis=true, auto=null;
+  function pg(i){ var p=BOOK[i]; return '<div class="pg"><span class="pg-no">0'+(i+1)+'</span><h3 class="pg-t">'+esc(p.t)+'</h3><ul class="pg-list">'+p.items.map(function(x){return "<li>"+esc(x)+"</li>"}).join("")+'</ul></div>'; }
+  function build(){
+    timers.forEach(clearTimeout); timers=[]; idx=0;
+    var single=mq.matches, h='<div class="book-body">';
+    if(!single) h+='<div class="pg-base pg-left"><div class="pg"><span class="pg-no">Our stack</span><h3 class="pg-t">Turn the page.</h3><p class="pg-note">Eight chapters, from front-end to AI.</p></div></div>';
+    h+='<div class="pg-base pg-right"><div class="pg"><span class="pg-no">The end</span><h3 class="pg-t">Something else in mind?</h3><p class="pg-note">Tell us what you need and we will suggest a stack that fits.</p><a class="btn btn-main" href="#contact">Talk to us</a></div></div>';
+    L=single?BOOK.length:BOOK.length/2;
+    for(var k=0;k<L;k++){
+      h+='<div class="leaf"><div class="face front">'+pg(single?k:2*k)+'</div>'+(single?'':'<div class="face back">'+pg(2*k+1)+'</div>')+'</div>';
+    }
+    h+='</div><div class="book-nav"><button class="book-btn" type="button" data-d="-1" aria-label="Previous page">&#8249;</button><button class="book-btn" type="button" data-d="1" aria-label="Next page">&#8250;</button></div>';
+    bookEl.className="book"+(single?" single":"");
+    bookEl.innerHTML=h;
+    leaves=[].slice.call(bookEl.querySelectorAll(".leaf"));
+    leaves.forEach(function(l,i){ l.style.zIndex=L-i; });
+  }
+  function flip(i,fwd){
+    var l=leaves[i]; l.style.zIndex=100; l.classList.toggle("flipped",fwd);
+    timers.push(setTimeout(function(){ l.style.zIndex=fwd?i+1:L-i; },1200));
+  }
+  function next(){
+    if(idx<L){ flip(idx,true); idx++; }
+    else{ for(var j=L-1;j>=0;j--) (function(j){ timers.push(setTimeout(function(){ flip(j,false); },(L-1-j)*150)); })(j); idx=0; }
+  }
+  function prev(){ if(idx>0){ idx--; flip(idx,false); } }
+  bookEl.addEventListener("click",function(e){ var b=e.target.closest(".book-btn"); if(!b) return; +b.dataset.d>0?next():prev(); });
+  bookEl.addEventListener("mouseenter",function(){hover=true}); bookEl.addEventListener("mouseleave",function(){hover=false});
+  bookEl.addEventListener("focusin",function(){hover=true}); bookEl.addEventListener("focusout",function(){hover=false});
+  if("IntersectionObserver" in window) new IntersectionObserver(function(es){vis=es[0].isIntersecting}).observe(bookEl);
+  if(!reduce) auto=setInterval(function(){ if(vis&&!hover&&!document.hidden) next(); },3400);
+  mq.addEventListener?mq.addEventListener("change",build):mq.addListener(build);
+  build();
+})();
 
 /* service select */
 var sel=document.getElementById("f-service");

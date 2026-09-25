@@ -282,6 +282,33 @@ html.lead-lock{overflow:hidden}
 .lead-card .form-actions .btn{min-height:48px}
 .lead-card .form-status{margin-top:10px}
 
+/* ---------- tech stack book ---------- */
+.book{max-width:1040px;margin-inline:auto}
+.book-body{position:relative;height:clamp(370px,40vw,440px);margin:14px auto 0;perspective:2600px}
+.book-body::before{content:"";position:absolute;inset:-14px;border-radius:22px;background:linear-gradient(160deg,#123071,#050E26);box-shadow:0 40px 90px -30px rgba(10,22,54,.7),inset 0 0 0 1px rgba(70,130,255,.25)}
+.pg-base{position:absolute;top:0;bottom:0;width:50%}
+.pg-left{left:0;border-radius:14px 0 0 14px;background:linear-gradient(90deg,#0F2359 0%,#0C1D4C 88%,#050E26 100%)}
+.pg-right{right:0;border-radius:0 14px 14px 0;background:linear-gradient(90deg,#050E26 0%,#0C1D4C 12%,#0F2359 100%)}
+.leaf{position:absolute;top:0;bottom:0;left:50%;width:50%;transform-origin:left center;transform-style:preserve-3d;transition:transform 1.15s cubic-bezier(.6,.05,.25,1)}
+.leaf.flipped{transform:rotateY(-180deg)}
+.face{position:absolute;inset:0;overflow:hidden;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.face.front{border-radius:0 14px 14px 0;background:linear-gradient(90deg,#050E26 0%,#0C1D4C 12%,#10265D 100%);box-shadow:inset -2px 0 0 rgba(152,168,204,.12)}
+.face.back{transform:rotateY(180deg);border-radius:14px 0 0 14px;background:linear-gradient(90deg,#10265D 0%,#0C1D4C 88%,#050E26 100%);box-shadow:inset 2px 0 0 rgba(152,168,204,.12)}
+.pg{height:100%;padding:clamp(20px,3.4vw,42px);display:flex;flex-direction:column;align-items:flex-start;color:var(--ice)}
+.pg-no{font-family:var(--display);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
+.pg-t{font-family:var(--display);font-weight:600;font-size:clamp(1.3rem,2.6vw,2rem);line-height:1.15;margin:12px 0 22px;color:var(--ice)}
+.pg-note{margin:0 0 24px;color:var(--mist);max-width:32ch}
+.pg-list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:9px}
+.pg-list li{padding:8px 15px;border-radius:999px;border:1px solid var(--line-strong);background:rgba(4,10,28,.5);font-weight:500;font-size:.95rem;color:var(--ice)}
+.book-nav{display:flex;justify-content:center;gap:14px;margin-top:36px}
+.book-btn{width:50px;height:50px;border-radius:50%;border:1px solid rgba(20,70,160,.35);background:var(--deep);color:var(--ice);font-size:1.6rem;line-height:1;cursor:pointer;transition:border-color .2s,transform .25s}
+.book-btn:hover{border-color:var(--cyan);transform:translateY(-2px)}
+.book.single .book-body{height:clamp(400px,110vw,470px);width:min(440px,100%)}
+.book.single .pg-right{left:0;right:auto;width:100%;border-radius:14px}
+.book.single .leaf{left:0;width:100%}
+.book.single .leaf.flipped{transform:rotateY(-100deg);opacity:0;transition:transform 1.15s cubic-bezier(.6,.05,.25,1),opacity .5s .55s}
+.book.single .face.front{border-radius:14px;background:linear-gradient(160deg,#10265D,#0A1A44)}
+
 /* ---------- responsive ---------- */
 @media (max-width:1080px){
   .cards{grid-template-columns:1fr}
