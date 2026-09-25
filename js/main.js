@@ -368,6 +368,20 @@ if(window.matchMedia("(hover: hover) and (pointer: fine)").matches && !reduce){
   });
 }
 
+/* ================= USP CARDS: cursor glow + tilt ================= */
+if(window.matchMedia("(hover: hover) and (pointer: fine)").matches && !reduce){
+  var uspGrid=document.querySelector(".usp-grid");
+  uspGrid.addEventListener("pointermove",function(e){
+    var it=e.target.closest(".usp-item"); if(!it) return;
+    var r=it.getBoundingClientRect(), x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height;
+    it.style.setProperty("--mx",(x*100)+"%"); it.style.setProperty("--my",(y*100)+"%");
+    it.style.setProperty("--ry",((x-.5)*8)+"deg"); it.style.setProperty("--rx",((.5-y)*6)+"deg");
+  });
+  uspGrid.addEventListener("pointerout",function(e){
+    var it=e.target.closest(".usp-item"); if(it && !it.contains(e.relatedTarget)){ it.style.setProperty("--rx","0deg"); it.style.setProperty("--ry","0deg"); }
+  });
+}
+
 /* ================= WORD SWAP ================= */
 var words=["builds","sells","automates","grows"], wi=0, swap=document.getElementById("swap");
 var glyphs="ZYTEXA<>/#*+=";
