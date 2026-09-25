@@ -315,6 +315,8 @@ html.lead-lock{overflow:hidden}
 .shards-card{position:absolute;z-index:3;pointer-events:none}
 .cards .card.shard{position:absolute;left:0;top:0;width:100%;height:100%;margin:0;opacity:1;transition:none;animation:none;will-change:transform,opacity;visibility:visible;pointer-events:none}
 
+#why{overflow-x:clip}
+
 /* ---------- responsive ---------- */
 @media (max-width:1080px){
   .cards{grid-template-columns:1fr}
