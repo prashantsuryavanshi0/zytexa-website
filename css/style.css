@@ -230,6 +230,17 @@ dialog h4{font-size:1rem;margin:28px 0 12px;font-weight:600}
 .usp .usp-item h3{color:var(--ice);font-size:clamp(1.2rem,2vw,1.6rem)}
 .usp .usp-item p{color:var(--mist);max-width:none}
 
+/* ---------- contact info cards ---------- */
+.info{gap:16px}
+.info .info-card{position:relative;padding:26px 28px 26px 32px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(160deg,#0D1C44 0%,#081432 100%);overflow:hidden;box-shadow:0 18px 50px -26px rgba(4,10,28,.6);transition:transform .4s cubic-bezier(.2,.8,.2,1),border-color .3s,box-shadow .4s}
+.info .info-card::before{content:"";position:absolute;left:0;top:22px;bottom:22px;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(180deg,var(--blue),var(--cyan))}
+.info .info-card:hover{transform:translateY(-3px);border-color:rgba(25,200,225,.4);box-shadow:0 24px 56px -26px rgba(20,70,160,.55)}
+.info .info-card h3{margin:0 0 12px;font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
+.info .info-card a,.info .info-card p{color:var(--ice);font-size:1.05rem}
+.info .info-card p{color:var(--mist);font-size:.98rem}
+.info .info-card a{transition:color .2s}
+.info .info-card a:hover{color:var(--cyan)}
+
 /* ---------- responsive ---------- */
 @media (max-width:1080px){
   .cards{grid-template-columns:1fr}
