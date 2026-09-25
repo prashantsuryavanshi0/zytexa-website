@@ -454,15 +454,15 @@ var RAW=atob(window.ZYTEXA_POINTS), TOTAL=RAW.length/3, ASPECT=0.9676;
 var N, D, tx,ty,tz,sx,sy,sz,dx,dy,dz,del,col,ox,oy, W,H,dpr,isMob,cx,cy,size;
 var sprites=[mkSprite("70,130,255"),mkSprite("25,200,225"),mkSprite("150,190,255")];
 function mkSprite(rgb){
-  var c=document.createElement("canvas"); c.width=c.height=48; var g=c.getContext("2d");
-  var gr=g.createRadialGradient(24,24,0,24,24,24);
+  var c=document.createElement("canvas"); c.width=c.height=32; var g=c.getContext("2d");
+  var gr=g.createRadialGradient(16,16,0,16,16,16);
   gr.addColorStop(0,"rgba(255,255,255,1)"); gr.addColorStop(.18,"rgba("+rgb+",1)"); gr.addColorStop(.45,"rgba("+rgb+",.35)"); gr.addColorStop(1,"rgba("+rgb+",0)");
-  g.fillStyle=gr; g.fillRect(0,0,48,48); return c;
+  g.fillStyle=gr; g.fillRect(0,0,32,32); return c;
 }
 function rnd(a,b){return a+Math.random()*(b-a)}
 function build(){
   isMob = window.innerWidth<=900;
-  N = Math.min(TOTAL, isMob?2500:((navigator.hardwareConcurrency||8)<=4?4500:7500)); D = isMob?90:220;
+  N = Math.min(TOTAL, isMob?2000:((navigator.hardwareConcurrency||8)<=4?3200:5200)); D = isMob?90:220;
   var M=N+D;
   tx=new Float32Array(M);ty=new Float32Array(M);tz=new Float32Array(M);sx=new Float32Array(M);sy=new Float32Array(M);sz=new Float32Array(M);
   dx=new Float32Array(M);dy=new Float32Array(M);dz=new Float32Array(M);del=new Float32Array(M);col=new Uint8Array(M);ox=new Float32Array(M);oy=new Float32Array(M);
@@ -480,7 +480,7 @@ function build(){
 function layout(){
   var rect=hero.getBoundingClientRect();
   W=rect.width; H=rect.height;
-  dpr=Math.min(window.devicePixelRatio||1, isMob?1.5:1.5);
+  dpr=Math.min(window.devicePixelRatio||1, isMob?1:1.25);
   canvas.width=Math.round(W*dpr); canvas.height=Math.round(H*dpr);
   ctx.setTransform(dpr,0,0,dpr,0,0);
   if(isMob){ size=Math.min(W*.62, H*.34); cx=W/2; cy=Math.max(H*.25, 72+size*.58); }
@@ -512,7 +512,8 @@ function frame(now){
   ctx.globalCompositeOperation="lighter";
   var base=Math.max(isMob?4.5:5, size/95), R=isMob?70:120, R2=R*R;
   var M=N+D;
-  for(var i=0;i<M;i++){
+  var stride=scrollP>.35?2:1;
+  for(var i=0;i<M;i+=stride){
     var x,y,z,e;
     if(i<N){
       var p=reduce?1:(t-del[i])/1.7; p=p<0?0:p>1?1:p; e=1-Math.pow(1-p,3);
