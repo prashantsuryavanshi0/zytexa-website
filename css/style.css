@@ -292,7 +292,7 @@ html.lead-lock{overflow:hidden}
 .pg-base{position:absolute;top:0;bottom:0;width:50%}
 .pg-left{left:0;border-radius:14px 0 0 14px;background:linear-gradient(90deg,#0F2359 0%,#0C1D4C 88%,#050E26 100%)}
 .pg-right{right:0;border-radius:0 14px 14px 0;background:linear-gradient(90deg,#050E26 0%,#0C1D4C 12%,#0F2359 100%)}
-.leaf{position:absolute;top:0;bottom:0;left:50%;width:50%;transform-origin:left center;transform-style:preserve-3d;transition:transform 1.15s cubic-bezier(.6,.05,.25,1)}
+.leaf{position:absolute;top:0;bottom:0;left:50%;width:50%;transform-origin:left center;transform-style:preserve-3d;transition:transform .85s cubic-bezier(.6,.05,.25,1)}
 .leaf.flipped{transform:rotateY(-180deg)}
 .face{position:absolute;inset:0;overflow:hidden;-webkit-backface-visibility:hidden;backface-visibility:hidden}
 .face.front{border-radius:0 14px 14px 0;background:linear-gradient(90deg,#050E26 0%,#0C1D4C 12%,#10265D 100%);box-shadow:inset -2px 0 0 rgba(152,168,204,.12)}
@@ -309,7 +309,7 @@ html.lead-lock{overflow:hidden}
 .book.single .book-body{height:clamp(400px,110vw,470px);width:min(440px,100%)}
 .book.single .pg-right{left:0;right:auto;width:100%;border-radius:14px}
 .book.single .leaf{left:0;width:100%}
-.book.single .leaf.flipped{transform:rotateY(-100deg);opacity:0;transition:transform 1.15s cubic-bezier(.6,.05,.25,1),opacity .5s .55s}
+.book.single .leaf.flipped{transform:rotateY(-100deg);opacity:0;transition:transform .85s cubic-bezier(.6,.05,.25,1),opacity .4s .4s}
 .book.single .face.front{border-radius:14px;background:linear-gradient(160deg,#10265D,#0A1A44)}
 
 /* ---------- service card depth dim ---------- */
