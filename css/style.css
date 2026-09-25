@@ -211,36 +211,6 @@ dialog h4{font-size:1rem;margin:28px 0 12px;font-weight:600}
 }
 @media (hover:none),(pointer:coarse){#cursor{display:none}}
 
-/* ---------- light theme (everything below the hero) ---------- */
-.ticker{background:#FFFFFF;border-color:var(--light-border);color:var(--light-text)}
-.ticker-track span{color:var(--light-muted)}
-#services,#why,#stack,#process{background:var(--light-bg)}
-#contact{background:#FFFFFF}
-.footer{background:var(--light-bg);border-color:var(--light-border)}
-.sec-title,.pillar-name,.step h3,.usp-item h3,dialog h3{color:var(--light-text)}
-.pillar-name{background:none;-webkit-background-clip:border-box;background-clip:border-box}
-.sec-lead,.step p,.usp-item p,.card li,.card .tag,.pillar-desc,.pillar-count{color:var(--light-muted)}
-.card{background:#FFFFFF;border-color:var(--light-border);box-shadow:0 2px 16px rgba(20,70,160,.07)}
-.card h3{color:var(--light-text)}
-.chip{background:var(--light-bg);border-color:var(--light-border);color:var(--light-text)}
-.tech-track span{background:#FFFFFF;border-color:var(--light-border);color:var(--light-text)}
-.step-dot{background:#FFFFFF;border-color:var(--light-border);color:var(--light-text)}
-.steps.in .step-dot{border-color:var(--royal);box-shadow:0 0 24px -4px rgba(20,70,160,.4);color:var(--royal)}
-.more{color:var(--light-text);border-bottom-color:var(--royal)}
-.more:hover{color:var(--royal)}
-.info-card{background:#FFFFFF;border-color:var(--light-border)}
-.info-card h3{color:var(--light-muted)}
-.info-card a,.info-card p{color:var(--light-text)}
-.field input,.field select,.field textarea{background-color:#F4F7FF;border-color:var(--light-border);color:var(--light-text)}
-.field label{color:var(--light-muted)}
-dialog{background:#FFFFFF;color:var(--light-text)}
-.dlg-close{background:#FFFFFF;border-color:var(--light-border);color:var(--light-text)}
-/* beyond the given spec (list was cut off after "dialog h4,"): keep dialog + form readable on white */
-dialog h4{color:var(--light-text)}
-dialog .tag,.dlg-list li,.form-note{color:var(--light-muted)}
-.form{background:#FFFFFF;border-color:var(--light-border)}
-.field select option{background:#FFFFFF;color:var(--light-text)}
-
 /* ---------- responsive ---------- */
 @media (max-width:1080px){
   .cards{grid-template-columns:1fr}
