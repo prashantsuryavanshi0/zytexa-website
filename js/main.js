@@ -397,7 +397,8 @@ function leadClose(){
   if(leadBusy||!leadDlg.open) return;
   if(reduce){ leadFinish(); return; }
   leadBusy=true;
-  var r=leadCard.getBoundingClientRect(), cols=r.width<480?4:6, rows=r.width<480?6:4;
+  setTimeout(leadFinish,1500);
+  var r=leadCard.getBoundingClientRect(), cols=r.width<480?3:4, rows=r.width<480?5:3;
   var wrap=document.createElement("div"); wrap.className="shards"; wrap.setAttribute("aria-hidden","true");
   wrap.style.cssText="left:"+r.left+"px;top:"+r.top+"px;width:"+r.width+"px;height:"+r.height+"px";
   var shards=[];
@@ -412,12 +413,11 @@ function leadClose(){
     s._to="translate("+(((cx2+.5)/cols-.5)*r.width*.9+rnd(-40,40))+"px,"+(((ry+.5)/rows-.5)*r.height*.5+rnd(260,620))+"px) rotate("+rnd(-70,70)+"deg) scale("+rnd(.5,.9)+")";
     wrap.appendChild(s); shards.push(s);
   }
-  leadDlg.appendChild(wrap); playShatter(shards.map(function(s){return s._d}));
+  leadDlg.appendChild(wrap); try{ playShatter(shards.map(function(s){return s._d})); }catch(x){}
   leadCard.classList.add("gone"); leadDlg.classList.add("closing");
   requestAnimationFrame(function(){ requestAnimationFrame(function(){
     shards.forEach(function(s){ s.style.transform=s._to; s.style.opacity="0"; });
   }); });
-  setTimeout(leadFinish,1400);
 }
 document.getElementById("lead-close").addEventListener("click",leadClose);
 leadDlg.addEventListener("cancel",function(e){ e.preventDefault(); leadClose(); });
