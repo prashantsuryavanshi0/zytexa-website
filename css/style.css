@@ -9,6 +9,8 @@
   --body:"Onest", "Segoe UI", system-ui, -apple-system, sans-serif;
   --pad:clamp(20px,5vw,56px);
   --nav-h:72px;
+  --light-bg:#F4F7FF; --light-surface:#FFFFFF; --light-border:rgba(20,70,160,.12);
+  --light-text:#0A1636; --light-muted:#4A5A80;
 }
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + env(safe-area-inset-top,0px));-webkit-text-size-adjust:100%}
@@ -98,7 +100,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .pillar-desc{color:var(--mist);margin:0 0 14px;max-width:32ch}
 .pillar-count{font-size:.9rem;color:var(--cyan);font-weight:500}
 .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
-.card{position:relative;padding:30px 28px 26px;border-radius:22px;background:linear-gradient(160deg,#0D1C44 0%,#081432 100%);border:1px solid var(--line);display:flex;flex-direction:column;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.2,1),border-color .3s;will-change:transform;overflow:hidden}
+.card{position:relative;padding:30px 28px 26px;border-radius:22px;background:linear-gradient(160deg,#0D1C44 0%,#081432 100%);border:1px solid var(--line);display:flex;flex-direction:column;transform-style:preserve-3d;transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .5s cubic-bezier(.2,.8,.2,1),border-color .3s;will-change:transform;overflow:hidden;opacity:0;transform:translateY(24px)}
+.pillar.in .card{opacity:1;transform:none;transition-delay:calc(var(--i,0)*80ms),calc(var(--i,0)*80ms),0s}
 .card::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(420px circle at var(--mx,50%) var(--my,0%),rgba(25,200,225,.16),transparent 45%);opacity:0;transition:opacity .35s}
 .card:hover{border-color:rgba(25,200,225,.4)}
 .card:hover::before{opacity:1}
@@ -201,6 +204,43 @@ dialog h4{font-size:1rem;margin:28px 0 12px;font-weight:600}
 @keyframes ring{0%{opacity:.8;transform:scale(1)}100%{opacity:0;transform:scale(1.35)}}
 .float-wa svg{width:24px;height:24px}
 
+/* ---------- custom cursor (desktop, fine pointer only; class added by JS) ---------- */
+#cursor{position:fixed;left:0;top:0;width:18px;height:18px;border:2px solid var(--cyan);border-radius:50%;z-index:9999;pointer-events:none;opacity:0;transition:transform .12s,opacity .3s}
+@media (hover:hover) and (pointer:fine){
+  .has-cursor,.has-cursor *{cursor:none}
+}
+@media (hover:none),(pointer:coarse){#cursor{display:none}}
+
+/* ---------- light theme (everything below the hero) ---------- */
+.ticker{background:#FFFFFF;border-color:var(--light-border);color:var(--light-text)}
+.ticker-track span{color:var(--light-muted)}
+#services,#why,#stack,#process{background:var(--light-bg)}
+#contact{background:#FFFFFF}
+.footer{background:var(--light-bg);border-color:var(--light-border)}
+.sec-title,.pillar-name,.step h3,.usp-item h3,dialog h3{color:var(--light-text)}
+.pillar-name{background:none;-webkit-background-clip:border-box;background-clip:border-box}
+.sec-lead,.step p,.usp-item p,.card li,.card .tag,.pillar-desc,.pillar-count{color:var(--light-muted)}
+.card{background:#FFFFFF;border-color:var(--light-border);box-shadow:0 2px 16px rgba(20,70,160,.07)}
+.card h3{color:var(--light-text)}
+.chip{background:var(--light-bg);border-color:var(--light-border);color:var(--light-text)}
+.tech-track span{background:#FFFFFF;border-color:var(--light-border);color:var(--light-text)}
+.step-dot{background:#FFFFFF;border-color:var(--light-border);color:var(--light-text)}
+.steps.in .step-dot{border-color:var(--royal);box-shadow:0 0 24px -4px rgba(20,70,160,.4);color:var(--royal)}
+.more{color:var(--light-text);border-bottom-color:var(--royal)}
+.more:hover{color:var(--royal)}
+.info-card{background:#FFFFFF;border-color:var(--light-border)}
+.info-card h3{color:var(--light-muted)}
+.info-card a,.info-card p{color:var(--light-text)}
+.field input,.field select,.field textarea{background-color:#F4F7FF;border-color:var(--light-border);color:var(--light-text)}
+.field label{color:var(--light-muted)}
+dialog{background:#FFFFFF;color:var(--light-text)}
+.dlg-close{background:#FFFFFF;border-color:var(--light-border);color:var(--light-text)}
+/* beyond the given spec (list was cut off after "dialog h4,"): keep dialog + form readable on white */
+dialog h4{color:var(--light-text)}
+dialog .tag,.dlg-list li,.form-note{color:var(--light-muted)}
+.form{background:#FFFFFF;border-color:var(--light-border)}
+.field select option{background:#FFFFFF;color:var(--light-text)}
+
 /* ---------- responsive ---------- */
 @media (max-width:1080px){
   .cards{grid-template-columns:1fr}
@@ -241,4 +281,6 @@ dialog h4{font-size:1rem;margin:28px 0 12px;font-weight:600}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
   .js [data-reveal]{opacity:1;transform:none}
+  .card{opacity:1;transform:none;transition-delay:0s!important}
+  #cursor{display:none}
 }
