@@ -62,7 +62,7 @@ PILLARS.forEach(function(pl){
     var i=SERVICES.indexOf(s), extra=s.items.length-3;
     html+='<article class="card" style="--i:'+k+'"><h3>'+esc(s.t)+'</h3><p class="tag">'+esc(s.tag)+'</p><ul>'+s.items.slice(0,3).map(function(x){return "<li>"+esc(x)+"</li>"}).join("")+'</ul>'+
       (s.tech.length?'<div class="chips">'+s.tech.slice(0,4).map(function(x){return '<span class="chip">'+esc(x)+'</span>'}).join("")+(s.tech.length>4?'<span class="chip">+'+(s.tech.length-4)+'</span>':'')+'</div>':'')+
-      '<button class="more" data-i="'+i+'">See everything included'+(extra>0?' (+'+extra+')':'')+'</button><span class="card-logo" aria-hidden="true"><canvas width="160" height="160"></canvas></span></article>';
+      '<button class="more" data-i="'+i+'">See everything included'+(extra>0?' (+'+extra+')':'')+'</button><span class="card-logo" aria-hidden="true"><canvas width="200" height="200"></canvas></span></article>';
   });
   html+='</div></div>';
 });
@@ -275,9 +275,10 @@ if(!reduce){
 if(!reduce && window.ZYTEXA_POINTS){
   var LG=null, lgActive=[], lgRaf=0, lgLast=0;
   function lgInit(){
-    var raw=atob(window.ZYTEXA_POINTS), total=raw.length/3, K=window.innerWidth<=900?260:420, step=Math.max(1,Math.floor(total/K));
+    var raw=atob(window.ZYTEXA_POINTS), total=raw.length/3, K=window.innerWidth<=900?520:900, prob=K/total;
     LG={n:0,tx:[],ty:[],tz:[],sx:[],sy:[],sz:[],del:[],col:[]};
-    for(var i=0;i<total && LG.n<K;i+=step){
+    for(var i=0;i<total;i++){
+      if(Math.random()>prob) continue;
       var x=raw.charCodeAt(i*3)/255-.5, y=raw.charCodeAt(i*3+1)/255-.5, c=raw.charCodeAt(i*3+2);
       var th=rnd(0,Math.PI*2), ph=Math.acos(rnd(-1,1)), r=rnd(1.3,2.2);
       LG.tx.push(x*.9676); LG.ty.push(y); LG.tz.push(rnd(-.06,.06)+(c?.06:0)); LG.col.push(c>2?0:c);
@@ -295,9 +296,9 @@ if(!reduce && window.ZYTEXA_POINTS){
       if(e<1){ var a=(1-e)*2.4, ca=Math.cos(a), sa=Math.sin(a), nx=x*ca-z*sa; z=x*sa+z*ca; x=nx; }
       var x1=x*cY+z*sY, z1=-x*sY+z*cY, y1=y*cX-z1*sX, z2=y*sX+z1*cX, persp=F/(F-z2);
       if(persp<=0||persp>6) continue;
-      var s=6.5*persp*(S/160);
-      g.globalAlpha=.9*(.35+.65*Math.min(1,e*1.4));
-      g.drawImage(sprites[LG.col[i]],S/2+x1*S*.78*persp-s/2,S/2+y1*S*.78*persp-s/2,s,s);
+      var s=8.5*persp*(S/200);
+      g.globalAlpha=.95*(.4+.6*Math.min(1,e*1.4));
+      g.drawImage(sprites[LG.col[i]],S/2+x1*S*.8*persp-s/2,S/2+y1*S*.8*persp-s/2,s,s);
     }
     g.globalAlpha=1; g.globalCompositeOperation="source-over";
   }
@@ -306,7 +307,7 @@ if(!reduce && window.ZYTEXA_POINTS){
     if(!lgActive.length||document.hidden) return;
     var settled=true;
     lgActive.forEach(function(cv){ if(now-cv._t0<2400) settled=false; });
-    if(settled && now-lgLast<33){ lgRaf=requestAnimationFrame(lgLoop); return; }
+    if(settled && now-lgLast<42){ lgRaf=requestAnimationFrame(lgLoop); return; }
     lgLast=now;
     lgActive.forEach(function(cv){ lgDraw(cv,(now-cv._t0)/1000); });
     lgRaf=requestAnimationFrame(lgLoop);
