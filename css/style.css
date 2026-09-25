@@ -314,7 +314,7 @@ html.lead-lock{overflow:hidden}
 
 /* ---------- service card depth dim ---------- */
 .cards{position:relative}
-.card::after{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--night);opacity:var(--dim,0);pointer-events:none}
+.card::after{content:"";position:absolute;inset:0;z-index:2;border-radius:inherit;background:var(--night);opacity:var(--dim,0);pointer-events:none}
 
 #why{overflow-x:clip}
 
