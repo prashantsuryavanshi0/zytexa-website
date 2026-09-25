@@ -211,6 +211,15 @@ dialog h4{font-size:1rem;margin:28px 0 12px;font-weight:600}
 }
 @media (hover:none),(pointer:coarse){#cursor{display:none}}
 
+/* ---------- light section backgrounds (hero, ticker, cards, footer stay dark) ---------- */
+#services,#why,#stack,#process,#contact{background:var(--light-bg)}
+.sec-title,.pillar-name,.step h3,.usp-item h3{color:var(--light-text)}
+.pillar-name{background:none;-webkit-background-clip:border-box;background-clip:border-box}
+.sec-lead,.step p,.usp-item p,.pillar-desc{color:var(--light-muted)}
+.pillar-count{color:var(--royal)}
+.pillar,.pillar:last-child,.usp-grid,.usp-item,.usp-item:nth-child(even){border-color:var(--light-border)}
+.steps::before{background:var(--light-border)}
+
 /* ---------- responsive ---------- */
 @media (max-width:1080px){
   .cards{grid-template-columns:1fr}
