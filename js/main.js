@@ -95,7 +95,7 @@ var BOOK=[
 ];
 (function(){
   var bookEl=document.getElementById("book"), mq=window.matchMedia("(max-width: 700px)");
-  var idx=0, L=0, leaves=[], timers=[], holdUntil=0, vis=true, auto=null;
+  var idx=0, L=0, leaves=[], timers=[], held=false, vis=true, auto=null;
   function pg(i){ var p=BOOK[i]; return '<div class="pg"><span class="pg-no">0'+(i+1)+'</span><h3 class="pg-t">'+esc(p.t)+'</h3><ul class="pg-list">'+p.items.map(function(x){return "<li>"+esc(x)+"</li>"}).join("")+'</ul></div>'; }
   function build(){
     timers.forEach(clearTimeout); timers=[]; idx=0;
@@ -122,9 +122,9 @@ var BOOK=[
   }
   function prev(){ if(idx>0){ idx--; flip(idx,false); } }
   bookEl.addEventListener("click",function(e){ var b=e.target.closest(".book-btn"); if(!b) return; +b.dataset.d>0?next():prev(); });
-  bookEl.addEventListener("pointerdown",function(){ holdUntil=Date.now()+10000; });
+  bookEl.addEventListener("click",function(e){ if(e.target.closest(".book-btn")||e.target.closest("a")){ held=true; return; } held=!held; });
   if("IntersectionObserver" in window) new IntersectionObserver(function(es){vis=es[0].isIntersecting}).observe(bookEl);
-  if(!reduce) auto=setInterval(function(){ if(vis&&Date.now()>holdUntil&&!document.hidden) next(); },2300);
+  if(!reduce) auto=setInterval(function(){ if(vis&&!held&&!document.hidden) next(); },2300);
   mq.addEventListener?mq.addEventListener("change",build):mq.addListener(build);
   build();
 })();
