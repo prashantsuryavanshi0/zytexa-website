@@ -62,7 +62,7 @@ PILLARS.forEach(function(pl){
     var i=SERVICES.indexOf(s), extra=s.items.length-3;
     html+='<article class="card" style="--i:'+k+'"><h3>'+esc(s.t)+'</h3><p class="tag">'+esc(s.tag)+'</p><ul>'+s.items.slice(0,3).map(function(x){return "<li>"+esc(x)+"</li>"}).join("")+'</ul>'+
       (s.tech.length?'<div class="chips">'+s.tech.slice(0,4).map(function(x){return '<span class="chip">'+esc(x)+'</span>'}).join("")+(s.tech.length>4?'<span class="chip">+'+(s.tech.length-4)+'</span>':'')+'</div>':'')+
-      '<button class="more" data-i="'+i+'">See everything included'+(extra>0?' (+'+extra+')':'')+'</button><img class="card-logo" src="assets/zytexa-logo.webp" alt="" width="155" height="160" loading="lazy" decoding="async"></article>';
+      '<button class="more" data-i="'+i+'">See everything included'+(extra>0?' (+'+extra+')':'')+'</button><span class="card-logo" aria-hidden="true"><img src="assets/zytexa-logo.webp" alt="" width="155" height="160" loading="lazy" decoding="async"></span></article>';
   });
   html+='</div></div>';
 });
