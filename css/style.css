@@ -312,11 +312,9 @@ html.lead-lock{overflow:hidden}
 .book.single .leaf.flipped{transform:rotateY(-100deg);opacity:0;transition:transform 1.15s cubic-bezier(.6,.05,.25,1),opacity .5s .55s}
 .book.single .face.front{border-radius:14px;background:linear-gradient(160deg,#10265D,#0A1A44)}
 
-/* ---------- card puzzle break ---------- */
+/* ---------- service card depth dim ---------- */
 .cards{position:relative}
-.card.shattered{visibility:hidden}
-.shards-card{position:absolute;z-index:3;pointer-events:none}
-.cards .card.shard{position:absolute;left:0;top:0;width:100%;height:100%;margin:0;opacity:1;transition:none;animation:none;will-change:transform,opacity;visibility:visible;pointer-events:none}
+.card::after{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--night);opacity:var(--dim,0);pointer-events:none}
 
 #why{overflow-x:clip}
 

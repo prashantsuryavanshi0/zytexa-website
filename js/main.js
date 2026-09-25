@@ -214,51 +214,26 @@ if(window.matchMedia("(hover: hover) and (pointer: fine)").matches && !reduce){
   dlg.addEventListener("close",curOn);
 }
 
-/* ================= CARD PUZZLE BREAK (scroll-scrubbed) ================= */
+/* ================= SERVICE CARDS: depth-stack exit (scroll-scrubbed, content stays readable) ================= */
 if(!reduce){
-  var pcards=[].slice.call(pillarsEl.querySelectorAll(".card")).map(function(el){ return {el:el,wrap:null,tiles:null,gone:false}; });
-  var pRaf=0;
-  function pClamp(v){ return v<0?0:v>1?1:v; }
-  function pDestroy(c){ if(c.wrap){ c.wrap.remove(); c.wrap=null; c.tiles=null; } }
-  function pBuild(c){
-    var el=c.el, w=el.offsetWidth, h=el.offsetHeight, small=window.innerWidth<=900, cols=small?2:3, rows=3;
-    var wrap=document.createElement("div"); wrap.className="shards-card"; wrap.setAttribute("aria-hidden","true");
-    wrap.style.cssText="left:"+el.offsetLeft+"px;top:"+el.offsetTop+"px;width:"+w+"px;height:"+h+"px";
-    var tiles=[];
-    for(var r=0;r<rows;r++) for(var k=0;k<cols;k++){
-      var s=el.cloneNode(true);
-      s.removeAttribute("style"); s.classList.add("shard");
-      s.querySelectorAll("button,a").forEach(function(n){n.tabIndex=-1});
-      var t=r/rows*100, rt=100-(k+1)/cols*100, b=100-(r+1)/rows*100, l=k/cols*100;
-      s.style.clipPath="inset(calc("+t+"% - .6px) calc("+rt+"% - .6px) calc("+b+"% - .6px) calc("+l+"% - .6px))";
-      s.style.transformOrigin=((k+.5)/cols*100)+"% "+((r+.5)/rows*100)+"%";
-      wrap.appendChild(s);
-      tiles.push({s:s,d:rnd(0,.35),dx:((k+.5)/cols-.5)*w*.45+rnd(-30,30),dy:rnd(260,640)+r*40,rot:rnd(-55,55)});
-    }
-    el.parentNode.appendChild(wrap); c.wrap=wrap; c.tiles=tiles;
-  }
-  function pUpdate(){
-    pRaf=0;
-    var rects=pcards.map(function(c){ return c.el.getBoundingClientRect(); });
-    pcards.forEach(function(c,i){
-      var el=c.el, rect=rects[i];
-      var p=pClamp((72-rect.top)/(rect.height*.9||1));
-      if(p>0 && !el.closest(".pillar.in")) p=0;
-      if(p===0){ if(c.wrap||c.gone){ pDestroy(c); el.classList.remove("shattered"); c.gone=false; } return; }
-      if(p>=1){ if(c.wrap) pDestroy(c); el.classList.add("shattered"); c.gone=true; return; }
-      c.gone=false;
-      if(!c.wrap){ pBuild(c); el.classList.add("shattered"); }
-      c.tiles.forEach(function(t){
-        var tp=pClamp((p-t.d)/.65), o=tp<.55?1:1-(tp-.55)/.45;
-        t.s.style.transform="translate("+(t.dx*tp)+"px,"+(t.dy*tp*tp)+"px) rotate("+(t.rot*tp)+"deg) scale("+(1-.25*tp)+")";
-        t.s.style.opacity=o;
-      });
+  var dcards=[].slice.call(pillarsEl.querySelectorAll(".card")), dRaf=0;
+  function dUpdate(){
+    dRaf=0;
+    var rects=dcards.map(function(el){ return el.getBoundingClientRect(); });
+    dcards.forEach(function(el,i){
+      var r=rects[i], p=(96-r.top)/(r.height*.9||1);
+      p=p<0?0:p>1?1:p;
+      if(p===0){ if(el._d){ el.style.scale=""; el.style.translate=""; el.style.setProperty("--dim",0); el._d=false; } return; }
+      el._d=true;
+      el.style.scale=(1-.07*p).toFixed(4);
+      el.style.translate="0 "+(-14*p).toFixed(2)+"px";
+      el.style.setProperty("--dim",(.6*p).toFixed(3));
     });
   }
-  function pSched(){ if(!pRaf) pRaf=requestAnimationFrame(pUpdate); }
-  window.addEventListener("scroll",pSched,{passive:true});
-  window.addEventListener("resize",function(){ pcards.forEach(function(c){ pDestroy(c); c.el.classList.remove("shattered"); c.gone=false; }); pSched(); });
-  pSched();
+  function dSched(){ if(!dRaf) dRaf=requestAnimationFrame(dUpdate); }
+  window.addEventListener("scroll",dSched,{passive:true});
+  window.addEventListener("resize",dSched);
+  dSched();
 }
 
 /* ================= USP CARDS: 3D fly-in from both sides (scroll-scrubbed) ================= */
