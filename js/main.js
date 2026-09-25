@@ -242,7 +242,7 @@ if(!reduce){
     var vh=window.innerHeight;
     pcards.forEach(function(c){
       var el=c.el, rect=el.getBoundingClientRect();
-      var p=pClamp((vh*.3-rect.top)/(rect.height*.9||1));
+      var p=pClamp((72-rect.top)/(rect.height*.9||1));
       if(p>0 && !el.closest(".pillar.in")) p=0;
       if(p===0){ if(c.wrap||c.gone){ pDestroy(c); el.classList.remove("shattered"); c.gone=false; } return; }
       if(p>=1){ if(c.wrap) pDestroy(c); el.classList.add("shattered"); c.gone=true; return; }
