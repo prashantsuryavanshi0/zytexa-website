@@ -163,7 +163,7 @@ if(window.matchMedia("(hover: hover) and (pointer: fine)").matches && !reduce){
   var root=document.documentElement, curOn=function(){ root.classList.add("has-cursor") }, curOff=function(){ root.classList.remove("has-cursor"); cur.style.opacity="0" };
   curOn();
   document.addEventListener("mousemove",function(e){
-    if(dlg.open) return;
+    if(dlg.open||leadDlg.open) return;
     var hot=e.target.closest&&e.target.closest("a,button,.card,.more");
     cur.style.opacity="1";
     cur.style.transform="translate("+e.clientX+"px,"+e.clientY+"px) translate(-50%,-50%) scale("+(hot?2.5:1)+")";
@@ -213,6 +213,82 @@ form.addEventListener("submit",function(e){
     status.textContent="WhatsApp is opening with your message filled in. Press send there to reach us.";
   }
 });
+
+/* ================= LEAD POPUP (once per session, after the hero) ================= */
+var leadDlg=document.getElementById("lead"), leadCard=document.getElementById("lead-card"), lform=document.getElementById("lform"), lstatus=document.getElementById("lform-status"), lvia="wa", leadBusy=false;
+document.getElementById("l-service").innerHTML=sel.innerHTML;
+function leadSeen(){ try{ return sessionStorage.getItem("zx_lead")==="1" }catch(x){ return false } }
+function leadMark(){ try{ sessionStorage.setItem("zx_lead","1") }catch(x){} }
+function leadOpen(){
+  if(leadSeen()||dlg.open||leadDlg.open||!leadDlg.showModal) return;
+  var c=document.getElementById("contact").getBoundingClientRect();
+  if(c.top<window.innerHeight && c.bottom>0) return;
+  leadMark();
+  leadDlg.showModal();
+  document.documentElement.classList.add("lead-lock");
+  if(typeof curOff==="function") curOff();
+}
+function leadFinish(){
+  var w=leadDlg.querySelector(".shards"); if(w) w.remove();
+  leadCard.classList.remove("gone"); leadDlg.classList.remove("closing");
+  document.documentElement.classList.remove("lead-lock");
+  if(leadDlg.open) leadDlg.close();
+  leadBusy=false;
+  if(typeof curOn==="function") curOn();
+}
+function leadClose(){
+  if(leadBusy||!leadDlg.open) return;
+  if(reduce){ leadFinish(); return; }
+  leadBusy=true;
+  var r=leadCard.getBoundingClientRect(), cols=r.width<480?4:6, rows=r.width<480?6:4;
+  var wrap=document.createElement("div"); wrap.className="shards"; wrap.setAttribute("aria-hidden","true");
+  wrap.style.cssText="left:"+r.left+"px;top:"+r.top+"px;width:"+r.width+"px;height:"+r.height+"px";
+  var shards=[];
+  for(var ry=0;ry<rows;ry++) for(var cx2=0;cx2<cols;cx2++){
+    var s=leadCard.cloneNode(true);
+    s.removeAttribute("id"); s.querySelectorAll("[id]").forEach(function(n){n.removeAttribute("id")});
+    s.querySelectorAll("button,input,select,textarea,a").forEach(function(n){n.tabIndex=-1});
+    s.className="shard";
+    s.style.clipPath="inset("+(ry/rows*100)+"% "+(100-(cx2+1)/cols*100)+"% "+(100-(ry+1)/rows*100)+"% "+(cx2/cols*100)+"%)";
+    s.style.transformOrigin=((cx2+.5)/cols*100)+"% "+((ry+.5)/rows*100)+"%";
+    s.style.transitionDelay=(Math.random()*.28)+"s";
+    s._to="translate("+(((cx2+.5)/cols-.5)*r.width*.9+rnd(-40,40))+"px,"+(((ry+.5)/rows-.5)*r.height*.5+rnd(260,620))+"px) rotate("+rnd(-70,70)+"deg) scale("+rnd(.5,.9)+")";
+    wrap.appendChild(s); shards.push(s);
+  }
+  leadDlg.appendChild(wrap);
+  leadCard.classList.add("gone"); leadDlg.classList.add("closing");
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){
+    shards.forEach(function(s){ s.style.transform=s._to; s.style.opacity="0"; });
+  }); });
+  setTimeout(leadFinish,1400);
+}
+document.getElementById("lead-close").addEventListener("click",leadClose);
+leadDlg.addEventListener("cancel",function(e){ e.preventDefault(); leadClose(); });
+leadDlg.addEventListener("click",function(e){ if(e.target===leadDlg) leadClose(); });
+lform.addEventListener("click",function(e){var b=e.target.closest("[data-via]"); if(b) lvia=b.dataset.via});
+lform.addEventListener("submit",function(e){
+  e.preventDefault();
+  var fN=document.getElementById("l-name"), fP=document.getElementById("l-phone"), fM=document.getElementById("l-msg");
+  var n=fN.value.trim(), ph=fP.value.trim(), sv=document.getElementById("l-service").value, m=fM.value.trim(), ok=true, first=null, digits=ph.replace(/\D/g,"");
+  if(!n){setErr("le-name",fN,"Enter your name so we know who to reply to.");ok=false;first=first||fN}else setErr("le-name",fN,"");
+  if(digits.length<10||digits.length>13){setErr("le-phone",fP,"Enter a 10-digit mobile number.");ok=false;first=first||fP}else setErr("le-phone",fP,"");
+  if(m.length<5){setErr("le-msg",fM,"Add a line or two about what you need.");ok=false;first=first||fM}else setErr("le-msg",fM,"");
+  if(!ok){first.focus();lstatus.textContent="";return}
+  var text="Hi Zytexa, I'm "+n+".\nService: "+sv+"\nPhone: "+ph+"\n\n"+m;
+  if(lvia==="mail"){
+    location.href="mailto:contact@zytexa.com?cc=Zytexatechnology@gmail.com&subject="+encodeURIComponent("Project enquiry: "+sv+" ("+n+")")+"&body="+encodeURIComponent(text);
+    lstatus.textContent="Your email app is opening with the message filled in. Press send there to reach us.";
+  }else{
+    window.open("https://wa.me/"+WA+"?text="+encodeURIComponent(text),"_blank","noopener");
+    lstatus.textContent="WhatsApp is opening with your message filled in. Press send there to reach us.";
+  }
+});
+if("IntersectionObserver" in window && !leadSeen()){
+  new IntersectionObserver(function(es){
+    var en=es[0];
+    if(!en.isIntersecting && en.boundingClientRect.bottom<0) setTimeout(leadOpen,700);
+  }).observe(document.getElementById("hero"));
+}
 
 /* ================= HERO 3D PARTICLE LOGO ================= */
 var canvas=document.getElementById("scene"), ctx=canvas.getContext("2d",{alpha:true});

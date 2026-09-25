@@ -284,6 +284,27 @@ button,input,select,textarea{font:inherit;color:inherit}
   </div>
 </footer>
 
+<dialog class="lead" id="lead" aria-labelledby="lead-title">
+  <div class="lead-card" id="lead-card">
+    <button class="lead-close" id="lead-close" type="button" aria-label="Close">×</button>
+    <p class="lead-title" id="lead-title">Tell us what you need.</p>
+    <p class="lead-sub">Your message opens in WhatsApp or your email app, ready to send straight to our team.</p>
+    <form id="lform" novalidate>
+      <div class="fields">
+        <div class="field"><label for="l-name">Your name</label><input id="l-name" autocomplete="name" required><span class="err" id="le-name"></span></div>
+        <div class="field"><label for="l-phone">Phone number</label><input id="l-phone" type="tel" inputmode="tel" autocomplete="tel" required><span class="err" id="le-phone"></span></div>
+        <div class="field full"><label for="l-service">Service you need</label><select id="l-service"></select></div>
+        <div class="field full"><label for="l-msg">About your project</label><textarea id="l-msg" required></textarea><span class="err" id="le-msg"></span></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-main" type="submit" data-via="wa">Send on WhatsApp</button>
+        <button class="btn btn-ghost" type="submit" data-via="mail">Send by email</button>
+      </div>
+      <p class="form-status" id="lform-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</dialog>
+
 <a class="float-wa" href="https://wa.me/919166720321?text=Hi%20Zytexa%2C%20I%27d%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener" aria-label="Chat with Zytexa on WhatsApp">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/><path d="M8.5 9.5c.3 2.4 2.1 4.4 4.6 5l1.2-1.2 2 .9"/></svg>
   <span>WhatsApp</span>
