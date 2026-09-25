@@ -85,8 +85,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 @keyframes slide{to{transform:translateX(-50%)}}
 
 /* ---------- sections ---------- */
-.section{padding-block:clamp(88px,12vw,168px)}
-.sec-head{max-width:880px;margin-bottom:clamp(48px,7vw,96px)}
+.section{padding-block:clamp(56px,7vw,96px)}
+.sec-head{max-width:880px;margin-bottom:clamp(36px,5vw,64px)}
 .sec-title{font-family:var(--display);font-weight:600;font-size:clamp(2rem,4.4vw,3.9rem);line-height:1.08;letter-spacing:-.02em;margin:0 0 20px}
 .sec-lead{color:var(--mist);font-size:clamp(1.02rem,1.3vw,1.18rem);max-width:58ch;margin:0}
 .js [data-reveal]{opacity:0;transform:translateY(34px);transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
