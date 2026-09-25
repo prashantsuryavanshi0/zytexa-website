@@ -335,6 +335,14 @@ html.lead-lock{overflow:hidden}
 #services .sec-title::after{content:"";display:block;width:72px;height:4px;margin-top:24px;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--cyan))}
 #services .sec-lead{max-width:56ch}
 
+/* ---------- service cards: 3D typing letters + animated logo ---------- */
+.card .w{display:inline-block;white-space:nowrap}
+.card .ch{display:inline-block;opacity:0;transform:perspective(480px) rotateX(-95deg) translateY(.55em) translateZ(-28px);transform-origin:50% 100%;text-shadow:0 2px 0 #2f63d6,0 4px 0 #1b47a8,0 7px 10px rgba(0,0,0,.55);transition:transform .32s cubic-bezier(.2,.9,.3,1.25),opacity .18s,text-shadow .6s ease .1s}
+.card .ch.on{opacity:1;transform:none;text-shadow:0 0 0 transparent}
+.card>*:not(.card-logo){position:relative;z-index:1}
+.card-logo{position:absolute;right:-14px;bottom:-10px;width:190px;height:auto;opacity:.11;pointer-events:none;z-index:0;transform-origin:60% 60%;animation:cardLogo 9s ease-in-out infinite}
+@keyframes cardLogo{0%,100%{transform:perspective(700px) translateY(0) rotateY(-24deg) rotateZ(-5deg) scale(1)}50%{transform:perspective(700px) translateY(-12px) rotateY(24deg) rotateZ(4deg) scale(1.07)}}
+
 /* ---------- responsive ---------- */
 @media (max-width:1080px){
   .cards{grid-template-columns:1fr}

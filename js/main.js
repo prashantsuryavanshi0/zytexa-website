@@ -62,7 +62,7 @@ PILLARS.forEach(function(pl){
     var i=SERVICES.indexOf(s), extra=s.items.length-3;
     html+='<article class="card" style="--i:'+k+'"><h3>'+esc(s.t)+'</h3><p class="tag">'+esc(s.tag)+'</p><ul>'+s.items.slice(0,3).map(function(x){return "<li>"+esc(x)+"</li>"}).join("")+'</ul>'+
       (s.tech.length?'<div class="chips">'+s.tech.slice(0,4).map(function(x){return '<span class="chip">'+esc(x)+'</span>'}).join("")+(s.tech.length>4?'<span class="chip">+'+(s.tech.length-4)+'</span>':'')+'</div>':'')+
-      '<button class="more" data-i="'+i+'">See everything included'+(extra>0?' (+'+extra+')':'')+'</button></article>';
+      '<button class="more" data-i="'+i+'">See everything included'+(extra>0?' (+'+extra+')':'')+'</button><img class="card-logo" src="assets/zytexa-logo.webp" alt="" width="155" height="160" loading="lazy" decoding="async"></article>';
   });
   html+='</div></div>';
 });
@@ -213,14 +213,50 @@ if(window.matchMedia("(hover: hover) and (pointer: fine)").matches && !reduce){
   dlg.addEventListener("close",curOn);
 }
 
-/* ================= SERVICE CARDS: depth-stack exit (scroll-scrubbed, content stays readable) ================= */
+/* ================= SERVICE CARDS: scroll-scrubbed 3D typing + depth exit ================= */
 if(!reduce){
   var dcards=[].slice.call(pillarsEl.querySelectorAll(".card")), dRaf=0;
+  dcards.forEach(function(el){
+    el._tw={built:false,chars:null,shown:0,nodes:[].slice.call(el.querySelectorAll("h3,.tag,li")).map(function(n){ return {el:n,text:n.textContent}; })};
+  });
+  function twBuild(el){
+    var st=el._tw, chars=[];
+    st.nodes.forEach(function(n){
+      n.el.textContent="";
+      n.text.split(" ").forEach(function(w,wi){
+        if(wi) n.el.appendChild(document.createTextNode(" "));
+        var ws=document.createElement("span"); ws.className="w";
+        for(var k=0;k<w.length;k++){ var sp=document.createElement("span"); sp.className="ch"; sp.textContent=w.charAt(k); ws.appendChild(sp); chars.push(sp); }
+        n.el.appendChild(ws);
+      });
+    });
+    st.chars=chars; st.shown=0; st.built=true;
+  }
+  function twDestroy(el){
+    var st=el._tw; st.nodes.forEach(function(n){ n.el.textContent=n.text; });
+    st.chars=null; st.built=false; st.shown=0;
+  }
+  function twSet(st,count){
+    var i;
+    if(count>st.shown){ for(i=st.shown;i<count;i++) st.chars[i].classList.add("on"); }
+    else{ for(i=count;i<st.shown;i++) st.chars[i].classList.remove("on"); }
+    st.shown=count;
+  }
   function dUpdate(){
     dRaf=0;
+    var vh=window.innerHeight;
     var rects=dcards.map(function(el){ return el.getBoundingClientRect(); });
     dcards.forEach(function(el,i){
-      var r=rects[i], p=(96-r.top)/(r.height*.9||1);
+      var r=rects[i], st=el._tw;
+      var near=r.top<vh*1.5 && r.bottom>-vh*.5;
+      if(!near){ if(st.built) twDestroy(el); }
+      else{
+        if(!st.built) twBuild(el);
+        var tp=(vh*.92-r.top)/(vh*.42); tp=tp<0?0:tp>1?1:tp;
+        var n=Math.round(tp*st.chars.length);
+        if(n!==st.shown) twSet(st,n);
+      }
+      var p=(96-r.top)/(r.height*.9||1);
       p=p<0?0:p>1?1:p;
       if(p===0){ if(el._d){ el.style.scale=""; el.style.translate=""; el.style.setProperty("--dim",0); el._d=false; } return; }
       el._d=true;
