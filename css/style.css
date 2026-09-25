@@ -370,7 +370,7 @@ html.lead-lock{overflow:hidden}
 @media (prefers-reduced-motion:reduce){.step h3,.step p{transition-delay:0s!important}}
 
 /* ---------- process steps: cards ---------- */
-.step::before{content:"";position:absolute;left:0;right:0;top:28px;bottom:0;border-radius:22px;background:linear-gradient(160deg,#0D1C44,#081432);border:1px solid var(--line);box-shadow:0 18px 44px -24px rgba(10,22,54,.7);z-index:0;transition:border-color .3s,box-shadow .4s}
+.step::before{content:"";position:absolute;left:0;right:0;top:28px;bottom:0;border-radius:22px;background:radial-gradient(340px circle at var(--mx,50%) var(--my,0%),rgba(25,200,225,.2),transparent 48%),linear-gradient(160deg,#0D1C44,#081432);border:1px solid var(--line);box-shadow:0 18px 44px -24px rgba(10,22,54,.7);z-index:0;transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:border-color .3s,box-shadow .4s,transform .45s cubic-bezier(.2,.8,.2,1)}
 .step-dot{margin-left:22px}
 .step h3,.step p{position:relative;z-index:1;padding-inline:22px}
 .step h3{color:#fff;margin-top:6px}
@@ -395,6 +395,15 @@ html.lead-lock{overflow:hidden}
   .step h3,.step p{padding-inline:0}
   .step p{padding-bottom:0}
 }
+
+/* ---------- process steps: icons, watermark ---------- */
+.step-ic{position:absolute;right:20px;top:48px;z-index:1;width:42px;height:42px;display:grid;place-items:center;border-radius:13px;color:var(--cyan);background:rgba(25,200,225,.1);border:1px solid rgba(25,200,225,.32);animation:icFloat 4.5s ease-in-out infinite}
+.step-ic svg{width:22px;height:22px}
+.step:nth-child(2) .step-ic{animation-delay:-.9s}.step:nth-child(3) .step-ic{animation-delay:-1.8s}.step:nth-child(4) .step-ic{animation-delay:-2.7s}.step:nth-child(5) .step-ic{animation-delay:-3.6s}
+@keyframes icFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.step:hover .step-ic{background:rgba(25,200,225,.22);border-color:var(--cyan)}
+.step::after{content:counter(s,decimal-leading-zero);position:absolute;right:16px;bottom:8px;z-index:0;font-family:var(--display);font-weight:700;font-size:4.4rem;line-height:1;letter-spacing:-.04em;color:rgba(152,168,204,.09);pointer-events:none}
+@media (max-width:600px){.step-ic{top:22px;right:18px}}
 
 /* ---------- responsive ---------- */
 @media (max-width:1080px){

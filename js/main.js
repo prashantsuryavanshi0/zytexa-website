@@ -354,6 +354,20 @@ if(!reduce){
   uSched();
 }
 
+/* ================= PROCESS CARDS: cursor glow + tilt ================= */
+if(window.matchMedia("(hover: hover) and (pointer: fine)").matches && !reduce){
+  var stepsEl=document.getElementById("steps");
+  stepsEl.addEventListener("pointermove",function(e){
+    var li=e.target.closest(".step"); if(!li) return;
+    var r=li.getBoundingClientRect(), x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height;
+    li.style.setProperty("--mx",(x*100)+"%"); li.style.setProperty("--my",(y*100)+"%");
+    li.style.setProperty("--ry",((x-.5)*9)+"deg"); li.style.setProperty("--rx",((.5-y)*7)+"deg");
+  });
+  stepsEl.addEventListener("pointerout",function(e){
+    var li=e.target.closest(".step"); if(li && !li.contains(e.relatedTarget)){ li.style.setProperty("--rx","0deg"); li.style.setProperty("--ry","0deg"); }
+  });
+}
+
 /* ================= WORD SWAP ================= */
 var words=["builds","sells","automates","grows"], wi=0, swap=document.getElementById("swap");
 var glyphs="ZYTEXA<>/#*+=";
